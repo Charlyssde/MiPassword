@@ -5,8 +5,11 @@
  */
 package controller;
 
+import clases.Boveda;
+import clases.Llave;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +58,10 @@ public class BovedasListController implements Initializable {
   private Button btnEliminar;
   @FXML
   private TableView<String> tblLlaves;
+  
+  private ArrayList<Boveda> bovedas;
+  
+  private ArrayList<Llave> llaves;
 
   /**
    * Initializes the controller class.
