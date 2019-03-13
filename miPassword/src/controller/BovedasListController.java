@@ -10,6 +10,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,7 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,8 +39,6 @@ public class BovedasListController implements Initializable {
   private AnchorPane anchorPane;
   @FXML
   private BorderPane borderPane;
-  @FXML
-  private SplitPane splitPane;
   @FXML
   private ListView<String> listaBovedas;
   @FXML
@@ -64,6 +64,7 @@ public class BovedasListController implements Initializable {
     // TODO
     listaBovedas.getItems().addAll("Redes Sociales", "Cuentas Bancarias", "Tiendas OnLine");
     tblLlaves.getItems().addAll("");
+    selectedInLlaves();
   }  
 
   @FXML
@@ -74,6 +75,17 @@ public class BovedasListController implements Initializable {
 
   @FXML
   private void editarElemento(MouseEvent event) {
+    try {
+      Parent root = FXMLLoader.load(getClass().getResource("/view/editarBoveda.fxml"));
+      Scene scene = new Scene(root);
+      Stage primaryStage = new Stage();
+      primaryStage.setTitle("Editar Boveda");
+      primaryStage.setScene(scene);
+      primaryStage.initModality(Modality.APPLICATION_MODAL);
+      primaryStage.show();
+    } catch (IOException ex) {
+      Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   @FXML
@@ -93,6 +105,39 @@ public class BovedasListController implements Initializable {
     } catch (IOException ex) {
       Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
     }
+  }
+  
+  private void selectedInLlaves() {
+    tblLlaves.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+      @Override
+      public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        if (tblLlaves.getSelectionModel().getSelectedItem() != null) {
+          TableView.TableViewSelectionModel selectionModel = tblLlaves.getSelectionModel();
+          String select = (String) selectionModel.getSelectedItem();
+          btnEditar.setDisable(false);
+          btnEliminar.setDisable(false);
+        } else {
+          btnEditar.setDisable(true);
+          btnEliminar.setDisable(true);
+        }
+      }
+
+    });
+    listaBovedas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+      @Override
+      public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+        if (listaBovedas.getSelectionModel().getSelectedItem() != null) {
+          SelectionModel selectionModel = listaBovedas.getSelectionModel();
+          
+          btnEditar.setDisable(false);
+          btnEliminar.setDisable(false);
+        } else {
+          btnEditar.setDisable(true);
+          btnEliminar.setDisable(true);
+        }
+      }
+
+    });
   }
   
 }
