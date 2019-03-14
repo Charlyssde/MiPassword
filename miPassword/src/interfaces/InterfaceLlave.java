@@ -1,14 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package interfaces;
 
 /**
  *
- * @author HP
+ * @author Jatniel Martínez
  */
 public interface InterfaceLlave {
+  
+  public void crearLlave();
+  public void consultarLlaves();
+  public void actualizarLlave();
+  public void eliminarLlave();
   
 }

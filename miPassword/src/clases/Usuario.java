@@ -5,11 +5,13 @@
  */
 package clases;
 
+import interfaces.InterfaceUsuario;
+
 /**
  *
  * @author Jatniel Martínez
  */
-public class Usuario {
+public class Usuario implements InterfaceUsuario {
   
   private char username;
   private char nombre;
@@ -34,6 +36,21 @@ public class Usuario {
     this.correo = correo;
     this.clavePublica = clavePublica;
     this.clavePrivada = clavePrivada;
+  }
+
+  @Override
+  public void registrarUsuario() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void verInformacion() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void cerrarSesion() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   
 }

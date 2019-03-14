@@ -5,11 +5,13 @@
  */
 package clases;
 
+import interfaces.InterfaceLlave;
+
 /**
  *
  * @author Jatniel Martínez
  */
-public class Llave {
+public class Llave implements InterfaceLlave {
   
   private char url;
   private char nomUsuario;
@@ -23,6 +25,26 @@ public class Llave {
     this.url = url;
     this.nomUsuario = nomUsuario;
     this.password = password;
+  }
+
+  @Override
+  public void crearLlave() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void consultarLlaves() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void actualizarLlave() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void eliminarLlave() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   
 }
