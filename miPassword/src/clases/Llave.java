@@ -11,18 +11,25 @@ package clases;
  */
 public class Llave {
   
-  private char url;
-  private char nomUsuario;
-  private char password;
+  private String url;
+  private String username;
+  private String password;
+  private Boveda boveda;
   
   public Llave() {
     
   }
   
-  public Llave(char url, char nomUsuario, char password) {
+  public Llave(Boveda boveda, String url, String username, String password) {
     this.url = url;
-    this.nomUsuario = nomUsuario;
+    this.username = username;
     this.password = password;
+    this.boveda = boveda;
+  }
+  
+  @Override
+  public String toString(){
+    return username + " - " + password;
   }
   
 }

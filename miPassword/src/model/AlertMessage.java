@@ -14,11 +14,7 @@ import javafx.stage.StageStyle;
  */
 public class AlertMessage {
 
-  public AlertMessage() {
-
-  }
-
-  public void mensaje(String mensaje) {
+  public static void mensaje(String mensaje) {
     Alert dialogo = new Alert(Alert.AlertType.INFORMATION);
     dialogo.setTitle("Aviso");
     dialogo.setHeaderText(null);

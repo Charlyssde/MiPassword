@@ -55,40 +55,6 @@
                </children>
             </Pane>
          </top>
-         <bottom>
-            <Pane prefHeight="49.0" prefWidth="607.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
-               <children>
-                  <Button fx:id="btnEditar" disable="true" layoutX="377.0" layoutY="6.0" mnemonicParsing="false" onMouseClicked="#editarElemento" style="-fx-background-color: transparent;">
-                     <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0">
-                           <image>
-                              <Image url="@../resources/icons/ic_editar_white.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Button fx:id="btnEliminar" disable="true" layoutX="449.0" layoutY="6.0" mnemonicParsing="false" onMouseClicked="#eliminarElemento" style="-fx-background-color: transparent;">
-                     <graphic>
-                        <ImageView fitHeight="30.0" fitWidth="30.0">
-                           <image>
-                              <Image url="@../resources/icons/ic_eliminar_white.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </Button>
-                  <Label layoutX="220.0" layoutY="13.0" prefHeight="23.0" prefWidth="180.0" text="BOVEDA / LLAVE" textFill="WHITE">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </Label>
-               </children></Pane>
-         </bottom>
          <left>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="491.0" prefWidth="190.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
                <children>
@@ -107,24 +73,54 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Button>
-                  <ListView fx:id="listaBovedas" layoutX="3.0" layoutY="56.0" prefHeight="405.0" prefWidth="137.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <ListView fx:id="listaBovedas" layoutX="12.0" layoutY="56.0" prefHeight="351.0" prefWidth="168.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" />
+                  <Button fx:id="btnEditarBoveda" disable="true" layoutX="49.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#editarBoveda" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@../resources/icons/ic_editar_white.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="btnEliminarBoveda" disable="true" layoutX="130.0" layoutY="488.0" mnemonicParsing="false" onMouseClicked="#eliminarBoveda" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@../resources/icons/ic_eliminar_white.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
             </AnchorPane>
          </left>
          <center>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="491.0" prefWidth="480.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="tblLlaves" editable="true" layoutX="14.0" layoutY="14.0" prefHeight="394.0" prefWidth="259.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="50.0">
+                  <TableView fx:id="tblLlaves" editable="true" layoutX="12.0" layoutY="52.0" prefHeight="387.0" prefWidth="408.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="51.0">
                      <columns>
-                        <TableColumn prefWidth="108.0" text="URL" />
-                        <TableColumn prefWidth="122.0" resizable="false" text="USERNAME" />
-                        <TableColumn editable="false" prefWidth="119.0" resizable="false" text="PASSWORD" />
+                        <TableColumn fx:id="colUrl" prefWidth="108.0" text="URL" />
+                        <TableColumn fx:id="colUsername" prefWidth="122.0" text="USERNAME" />
+                        <TableColumn fx:id="colPassword" editable="false" prefWidth="119.0" text="PASSWORD" />
                      </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
-                  <Button fx:id="btnNuevaLlave" layoutX="340.0" layoutY="14.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="80.0" style="-fx-background-color: transparent;" text="Llave" textFill="WHITE">
+                  <Button fx:id="btnNuevaLlave" layoutX="340.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#nuevaLlave" prefHeight="33.0" prefWidth="80.0" style="-fx-background-color: transparent;" text="Llave" textFill="WHITE">
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
@@ -149,6 +145,36 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
+                  <Button fx:id="btnEditarLlave" disable="true" layoutX="294.0" layoutY="494.0" mnemonicParsing="false" onMouseClicked="#editarLlave" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@../resources/icons/ic_editar_white.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="btnEliminarLlave" disable="true" layoutX="370.0" layoutY="494.0" mnemonicParsing="false" onMouseClicked="#eliminarLlave" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0">
+                           <image>
+                              <Image url="@../resources/icons/ic_eliminar_white.png" />
+                           </image>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
             </AnchorPane>
          </center>

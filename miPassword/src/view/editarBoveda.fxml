@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="150.0" prefWidth="400.0" style="-fx-background-color: #2d2e30;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AgregarBovedaController">
+<AnchorPane id="AnchorPane" fx:id="anchorPane" prefHeight="150.0" prefWidth="400.0" style="-fx-background-color: #2d2e30;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditarBovedaController">
    <children>
       <TextField fx:id="txtNombre" layoutX="70.0" layoutY="56.0" prefHeight="25.0" prefWidth="260.0" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: white; -fx-text-fill: white;" />
       <Label layoutX="14.0" layoutY="14.0" text="EDITAR NOMBRE" textFill="WHITE">

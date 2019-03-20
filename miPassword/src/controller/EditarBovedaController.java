@@ -7,7 +7,13 @@ package controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -16,6 +22,15 @@ import javafx.fxml.Initializable;
  */
 public class EditarBovedaController implements Initializable {
 
+  @FXML
+  private AnchorPane anchorPane;
+  @FXML
+  private TextField txtNombre;
+  @FXML
+  private Button btnAceptar;
+  @FXML
+  private Button btnGuardar;
+
   /**
    * Initializes the controller class.
    */
@@ -23,5 +38,25 @@ public class EditarBovedaController implements Initializable {
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
   }  
+
+  @FXML
+  private void agregarBoveda(MouseEvent event) {
+    
+    cerrar();
+  }
+
+  @FXML
+  private void cancelar(MouseEvent event) {
+    cerrar();
+  }
+  
+  public void cargarBoveda(String nombre){
+    txtNombre.setText(nombre); 
+  }
+  
+  public void cerrar(){
+    Stage stage = (Stage) anchorPane.getScene().getWindow();
+    stage.close();
+  }
   
 }
