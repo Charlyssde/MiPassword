@@ -110,7 +110,7 @@
          <center>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="491.0" prefWidth="480.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="tblLlaves" editable="true" layoutX="12.0" layoutY="52.0" prefHeight="387.0" prefWidth="408.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="51.0">
+                  <TableView fx:id="tblLlaves" editable="true" layoutX="12.0" layoutY="52.0" prefHeight="387.0" prefWidth="408.0" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="11.0" AnchorPane.topAnchor="51.0">
                      <columns>
                         <TableColumn fx:id="colUrl" prefWidth="108.0" text="URL" />
                         <TableColumn fx:id="colUsername" prefWidth="122.0" text="USERNAME" />

@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package interfaces;
+package model.interfaces;
 
 /**
  *
  * @author HP
  */
-public interface InterfaceLlave {
+public interface InterfaceBoveda {
   
 }

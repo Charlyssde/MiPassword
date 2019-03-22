@@ -5,9 +5,9 @@
  */
 package controller;
 
-import clases.Boveda;
-import clases.Llave;
-import clases.Usuario;
+import model.Boveda;
+import model.Llave;
+import model.Usuario;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,7 +52,7 @@ public class BovedasListController implements Initializable {
   private ListView<String> listaBovedas;
   @FXML
   private TableView<Llave> tblLlaves;
-    @FXML
+  @FXML
   private TableColumn<Llave, String> colUrl;
   @FXML
   private TableColumn<Llave, String> colUsername;
@@ -76,9 +77,11 @@ public class BovedasListController implements Initializable {
     
   private ArrayList<Boveda> bovedas;
   
-  private ArrayList<Llave> llaves;
+  private Boveda editada;
   
-  private String selectedLlave;
+  private ObservableList<Llave> llaves;
+  
+  private Llave selectedLlave;
   
   private String selectedBoveda;
   
@@ -91,10 +94,9 @@ public class BovedasListController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
-    cargarBovedas();
     cargarColumnas();
+    cargarBovedas();
     cargarLlaves();
-    listaBovedas.getItems().add(bovedas.get(0).toString());
     selectedInLlaves();
     selectedInBovedas();
   }  
@@ -126,7 +128,8 @@ public class BovedasListController implements Initializable {
       public void changed(ObservableValue observable, Object oldValue, Object newValue) {
         if (tblLlaves.getSelectionModel().getSelectedItem() != null) {
           TableView.TableViewSelectionModel selectionModel = tblLlaves.getSelectionModel();
-          selectedLlave = (String) selectionModel.getSelectedItem();
+          selectedLlave = (Llave) selectionModel.getSelectedItem();
+          System.out.println(selectedLlave.toString());
           btnEditarLlave.setDisable(false);
           btnEliminarLlave.setDisable(false);
         } else {
@@ -199,18 +202,14 @@ public class BovedasListController implements Initializable {
   public void cargarBovedas(){
     bovedas = new ArrayList<>();
     Boveda boveda = new Boveda("Redes Sociales",this.owner);
-    boveda.cargarLlaves();
+    llaves = (ObservableList<Llave>) boveda.cargarLlaves();
     bovedas.add(boveda);
-    System.out.println(bovedas.get(0).toString());
+    listaBovedas.getItems().add(bovedas.get(0).toString());
     
   }
   
   public void cargarLlaves(){
-    llaves = new ArrayList<>();
-    llaves.addAll(bovedas.get(0).getLlaves());
-    System.out.println(bovedas.get(0).getLlaves().get(0));
     tblLlaves.getItems().addAll(llaves);
-    
   }
 
   public void cargarColumnas(){

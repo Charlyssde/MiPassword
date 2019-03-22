@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clases;
+package model;
 
-import java.util.ArrayList;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -14,9 +16,9 @@ import java.util.ArrayList;
 public class Boveda {
   
   private String nombre;
-  private String numLlaves;
+  private int numLlaves;
   private Usuario owner;
-  private ArrayList<Llave> llaves;
+  private ObservableList<Llave> llaves;
   
   public Boveda() {
     
@@ -36,12 +38,12 @@ public class Boveda {
     this.nombre = nombre;
   }
 
-  public String getNumLlaves() {
+  public int getNumLlaves() {
     return numLlaves;
   }
 
-  public void setNumLlaves(String numLlaves) {
-    this.numLlaves = numLlaves;
+  public void setNumLlaves() {
+    this.numLlaves = llaves.size();
   }
 
   public Usuario getOwner() {
@@ -52,21 +54,17 @@ public class Boveda {
     this.owner = owner;
   }
 
-  public ArrayList<Llave> getLlaves() {
+  public List<Llave> getLlaves() {
     return llaves;
   }
-
-  public void setLlaves(ArrayList<Llave> llaves) {
-    this.llaves = llaves;
-  }
  
-   public final void cargarLlaves(){
-    llaves = new ArrayList<>();
-    Llave uno = new Llave(this,"www.website.com", "YISUSK98", "32148");
-    Llave dos = new Llave(this,"www.afsa.com", "OOI", "321815");
+   public final List<Llave> cargarLlaves(){
+    llaves = FXCollections.observableArrayList();
+    Llave uno = new Llave("www.website.com", "YISUSK98", "32148");
+    Llave dos = new Llave("www.afsa.com", "OOI", "321815");
     llaves.add(uno);
     llaves.add(dos);
-    
+    return llaves;
   }
    
    @Override

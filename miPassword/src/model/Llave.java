@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package clases;
+package model;
+
+import model.Boveda;
 
 /**
  *
@@ -20,11 +22,11 @@ public class Llave {
     
   }
   
-  public Llave(Boveda boveda, String url, String username, String password) {
+  public Llave(String url, String username, String password) {
     this.url = url;
     this.username = username;
     this.password = password;
-    this.boveda = boveda;
+    //this.boveda = boveda;
   }
   
   @Override
