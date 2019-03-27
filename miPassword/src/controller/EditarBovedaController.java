@@ -6,6 +6,7 @@
 package controller;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,6 +15,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.AlertMessage;
+import model.Boveda;
 
 /**
  * FXML Controller class
@@ -30,6 +33,12 @@ public class EditarBovedaController implements Initializable {
   private Button btnAceptar;
   @FXML
   private Button btnGuardar;
+  
+  private ArrayList<Boveda> bovedas;
+  
+  private Boveda editar;
+  
+  private BovedasListController anterior;
 
   /**
    * Initializes the controller class.
@@ -38,25 +47,58 @@ public class EditarBovedaController implements Initializable {
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
   }  
-
-  @FXML
-  private void agregarBoveda(MouseEvent event) {
-    
-    cerrar();
+  
+  public void cargarBoveda(ArrayList<Boveda> listaNueva, Boveda nueva, BovedasListController anterior){
+    editar = nueva;
+    txtNombre.setText(editar.getNombre()); 
+    this.bovedas = listaNueva;
+    this.anterior = anterior;
   }
 
+  @FXML
+  private void editarBoveda(MouseEvent event) {
+    if(validarNombre()){
+      for(Boveda b : bovedas){
+        if(b.getNombre().equals(editar.getNombre())){
+          b.setNombre(txtNombre.getText());
+          anterior.actualizarListaBovedas(bovedas);
+          cerrar();
+          AlertMessage.mensaje("Se ha actualizado con exito");
+        }
+      }
+    }
+  }
+ 
+  private boolean validarNombre() {
+
+    if (txtNombre.getText().isEmpty()) {
+      AlertMessage.mensaje("Error: No puede quedar vacío el campo de texto");
+      return false;
+    } else if (existeYa()) {
+      AlertMessage.mensaje("Error: El nombre ya existe actualmente");
+      return false;
+    }
+
+    return true;
+  }
+
+  private boolean existeYa() {
+
+    for (Boveda b : bovedas) {
+      if (b.getNombre().equals(txtNombre.getText())) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   @FXML
   private void cancelar(MouseEvent event) {
     cerrar();
   }
   
-  public void cargarBoveda(String nombre){
-    txtNombre.setText(nombre); 
-  }
-  
-  public void cerrar(){
+  public final void cerrar(){
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
   }
-  
 }

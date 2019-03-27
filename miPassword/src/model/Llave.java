@@ -13,6 +13,8 @@ import model.Boveda;
  */
 public class Llave {
   
+  private int id;
+  private String nombre;
   private String url;
   private String username;
   private String password;
@@ -22,7 +24,8 @@ public class Llave {
     
   }
   
-  public Llave(String url, String username, String password) {
+  public Llave(String nombre,String url, String username, String password) {
+    this.nombre = nombre;
     this.url = url;
     this.username = username;
     this.password = password;
@@ -31,7 +34,48 @@ public class Llave {
   
   @Override
   public String toString(){
-    return username + " - " + password;
+    return nombre + " - " + username + " - " + password;
   }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Boveda getBoveda() {
+    return boveda;
+  }
+
+  public void setBoveda(Boveda boveda) {
+    this.boveda = boveda;
+  }
+  
   
 }

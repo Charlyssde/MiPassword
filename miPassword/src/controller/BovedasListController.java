@@ -11,19 +11,20 @@ import model.Usuario;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionModel;
@@ -53,6 +54,8 @@ public class BovedasListController implements Initializable {
   @FXML
   private TableView<Llave> tblLlaves;
   @FXML
+  private TableColumn<Llave, String> colNombre;
+  @FXML
   private TableColumn<Llave, String> colUrl;
   @FXML
   private TableColumn<Llave, String> colUsername;
@@ -74,19 +77,18 @@ public class BovedasListController implements Initializable {
   private Button btnEditarLlave;
   @FXML
   private Button btnEliminarLlave;
-    
-  private ArrayList<Boveda> bovedas;
-  
-  private Boveda editada;
-  
-  private ObservableList<Llave> llaves;
-  
-  private Llave selectedLlave;
-  
-  private String selectedBoveda;
-  
-  private Usuario owner;
 
+  private ArrayList<Boveda> bovedas;
+
+  private Boveda editada;
+
+  private List<Llave> llaves;
+
+  private Llave selectedLlave;
+
+  private String selectedBoveda;
+
+  private final Usuario owner = new Usuario();
 
   /**
    * Initializes the controller class.
@@ -94,23 +96,36 @@ public class BovedasListController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
-    cargarColumnas();
+    cargarColumnasLlave();
     cargarBovedas();
-    cargarLlaves();
     selectedInLlaves();
     selectedInBovedas();
-  }  
+  }
 
   @FXML
   private void salir(MouseEvent event) {
-    Stage stage = (Stage) anchorPane.getScene().getWindow();
-    stage.close();
+    try {
+      Parent root = FXMLLoader.load(getClass().getResource("/view/LogIn.fxml"));
+      Scene scene = new Scene(root);
+      Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
+      primaryStage.setTitle("LogIn");
+      primaryStage.setScene(scene);
+      primaryStage.setResizable(false);
+      primaryStage.show();
+    } catch (IOException ex) {
+      Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   @FXML
   private void agregarBoveda(MouseEvent event) {
     try {
-      Parent root = FXMLLoader.load(getClass().getResource("/view/agregarBoveda.fxml"));
+      FXMLLoader loader = new FXMLLoader();
+      loader.setLocation(getClass().getResource("/view/agregarBoveda.fxml"));
+      loader.load();
+      AnchorPane root = loader.getRoot();
+      AgregarBovedaController ventana = loader.getController();
+      ventana.cargarObjetos(this, this.bovedas, this.owner);
       Scene scene = new Scene(root);
       Stage primaryStage = new Stage();
       primaryStage.setTitle("Agregar Boveda");
@@ -120,8 +135,146 @@ public class BovedasListController implements Initializable {
     } catch (IOException ex) {
       Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
     }
+    btnEliminarBoveda.setDisable(true);
+    btnEditarBoveda.setDisable(true);
   }
-  
+
+  @FXML
+  private void editarBoveda(MouseEvent event) {
+    try {
+      FXMLLoader loader = new FXMLLoader();
+      loader.setLocation(getClass().getResource("/view/editarBoveda.fxml"));
+      loader.load();
+      AnchorPane edit = loader.getRoot();
+      EditarBovedaController editBoveda = loader.getController();
+      editBoveda.cargarBoveda(bovedas, editada, this);
+      Scene scene = new Scene(edit);
+      Stage primaryStage = new Stage();
+      primaryStage.setTitle("Editar Boveda");
+      primaryStage.setScene(scene);
+      primaryStage.initModality(Modality.APPLICATION_MODAL);
+      primaryStage.show();
+    } catch (IOException ex) {
+      Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    this.btnEditarBoveda.setDisable(true);
+    this.btnEliminarBoveda.setDisable(true);
+  }
+
+  @FXML
+  private void eliminarBoveda(MouseEvent event) {
+    Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la llave?");
+    if (result.get() == ButtonType.OK) {
+      btnEliminarBoveda.setDisable(true);
+      btnEditarBoveda.setDisable(true);
+      for (Boveda b : bovedas) {
+        if (b.equals(editada)) {
+          bovedas.remove(b);
+          actualizarListaBovedas(bovedas);
+          AlertMessage.mensaje("Eliminado correctamente de la base de datos");
+          break;
+        }
+      }
+    }
+
+  }
+
+  public void cargarUsuario(Usuario user) {
+    this.lblUsername.setText(user.getUsername());
+
+  }
+
+  public void cargarLlaves() {
+  }
+
+  @FXML
+  private void nuevaLlave(MouseEvent event) throws IOException {
+    FXMLLoader loader = new FXMLLoader();
+    loader.setLocation(getClass().getResource("/view/agregarLlave.fxml"));
+    loader.load();
+    AnchorPane root = loader.getRoot();
+    AgregarLlaveController ventana = loader.getController();
+    ventana.cargarDatos(this, this.editada, this.bovedas);
+    Scene scene = new Scene(root);
+    Stage primaryStage = new Stage();
+    primaryStage.setTitle("Agregar Llave");
+    primaryStage.setScene(scene);
+    primaryStage.initModality(Modality.APPLICATION_MODAL);
+    primaryStage.show();
+    btnEditarLlave.setDisable(true);
+    btnEliminarLlave.setDisable(true);
+  }
+
+  @FXML
+  private void editarLlave(MouseEvent event) throws IOException {
+    FXMLLoader loader = new FXMLLoader();
+    loader.setLocation(getClass().getResource("/view/editarLlave.fxml"));
+    loader.load();
+    AnchorPane root = loader.getRoot();
+    EditarLlaveController ventana = loader.getController();
+    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves);
+    Scene scene = new Scene(root);
+    Stage primaryStage = new Stage();
+    primaryStage.setTitle("Editar Llave");
+    primaryStage.setScene(scene);
+    primaryStage.initModality(Modality.APPLICATION_MODAL);
+    primaryStage.show();
+    btnEditarLlave.setDisable(true);
+    btnEliminarLlave.setDisable(true);
+  }
+
+  @FXML
+  private void eliminarLlave(MouseEvent event) {
+    Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la llave?");
+    if (result.get() == ButtonType.OK) {
+      for (Llave del : llaves) {
+        if (del.equals(selectedLlave)) {
+          llaves.remove(del);
+          actualizarTablaLlaves(editada);
+          AlertMessage.mensaje("Llave eliminada satisfactoriamente");
+          break;
+        }
+      }
+      btnEditarLlave.setDisable(true);
+      btnEliminarLlave.setDisable(true);
+    }
+  }
+
+  public void cargarBovedas() {
+    bovedas = new ArrayList<>();
+    Boveda b = new Boveda("Uno", owner);
+    bovedas.add(b);
+    listaBovedas.getItems().add(bovedas.get(0).toString());
+
+  }
+
+  public void actualizarTablaLlaves(Boveda nueva) {
+    tblLlaves.getItems().clear();
+    llaves = nueva.getLlaves();
+    tblLlaves.getItems().addAll(llaves);
+  }
+
+  public void actualizarListaBovedas(ArrayList<Boveda> nuevaLista) {
+    listaBovedas.getItems().clear();
+    ArrayList<String> nombres = new ArrayList<>();
+    for (Boveda b : nuevaLista) {
+      nombres.add(b.getNombre());
+    }
+    listaBovedas.getItems().addAll(nombres);
+  }
+
+  public void cargarColumnasLlave() {
+    colUrl.setCellValueFactory(
+        new PropertyValueFactory<>("url"));
+    colUsername.setCellValueFactory(
+        new PropertyValueFactory<>("username"));
+    colPassword.setCellValueFactory(
+        new PropertyValueFactory<>("password"));
+    colNombre.setCellValueFactory(
+        new PropertyValueFactory<>("nombre"));
+
+  }
+
   private void selectedInLlaves() {
     tblLlaves.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
       @Override
@@ -140,14 +293,23 @@ public class BovedasListController implements Initializable {
 
     });
   }
-  
-  private void selectedInBovedas(){
-     listaBovedas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+
+  private void selectedInBovedas() {
+    listaBovedas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
       @Override
       public void changed(ObservableValue observable, Object oldValue, Object newValue) {
         if (listaBovedas.getSelectionModel().getSelectedItem() != null) {
           SelectionModel selectionModel = listaBovedas.getSelectionModel();
           selectedBoveda = (String) selectionModel.getSelectedItem();
+          for (Boveda b : bovedas) {
+            if (selectedBoveda.equals(b.getNombre())) {
+              editada = b;
+              llaves = editada.cargarLlaves();
+              tblLlaves.getItems().addAll(llaves);
+              break;
+            }
+          }
+          btnNuevaLlave.setDisable(false);
           btnEditarBoveda.setDisable(false);
           btnEliminarBoveda.setDisable(false);
         } else {
@@ -157,71 +319,5 @@ public class BovedasListController implements Initializable {
       }
 
     });
-  }
-
-  @FXML
-  private void editarLlave(MouseEvent event) {
-  }
-
-  @FXML
-  private void eliminarLlave(MouseEvent event) {
-  }
-
-  @FXML
-  private void editarBoveda(MouseEvent event) {
-    try {
-      FXMLLoader loader = new FXMLLoader();
-      loader.setLocation(getClass().getResource("/view/editarBoveda.fxml"));
-      loader.load();
-      AnchorPane edit = loader.getRoot();
-      EditarBovedaController editBoveda = loader.getController();
-      editBoveda.cargarBoveda(selectedBoveda);
-      Scene scene = new Scene(edit);
-      Stage primaryStage = new Stage();
-      primaryStage.setTitle("Editar Boveda");
-      primaryStage.setScene(scene);
-      primaryStage.initModality(Modality.APPLICATION_MODAL);
-      primaryStage.show();
-    } catch (IOException ex) {
-      Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    this.btnEditarBoveda.setDisable(true);
-    this.btnEliminarBoveda.setDisable(true);
-  }
-
-  @FXML
-  private void eliminarBoveda(MouseEvent event) {
-    AlertMessage.mensaje("Eliminado correctamente de la base de datos");
-  }
-  
-  public void cargarUsuario(Usuario user){
-    this.lblUsername.setText(user.getUsername());
-    
-  }
-  
-  public void cargarBovedas(){
-    bovedas = new ArrayList<>();
-    Boveda boveda = new Boveda("Redes Sociales",this.owner);
-    llaves = (ObservableList<Llave>) boveda.cargarLlaves();
-    bovedas.add(boveda);
-    listaBovedas.getItems().add(bovedas.get(0).toString());
-    
-  }
-  
-  public void cargarLlaves(){
-    tblLlaves.getItems().addAll(llaves);
-  }
-
-  public void cargarColumnas(){
-    colUrl.setCellValueFactory(
-        new PropertyValueFactory<Llave, String>("url"));
-    colUsername.setCellValueFactory(
-        new PropertyValueFactory<Llave, String>("username"));
-    colPassword.setCellValueFactory(
-        new PropertyValueFactory<Llave, String>("password"));
-    
-  }
-  @FXML
-  private void nuevaLlave(MouseEvent event) {
   }
 }

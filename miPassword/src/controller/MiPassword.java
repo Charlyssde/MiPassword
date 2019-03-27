@@ -23,11 +23,11 @@ public class MiPassword extends Application {
   @Override
   public void start(Stage primaryStage) {
     try {
-      Parent root = FXMLLoader.load(getClass().getResource("/view/BovedasList.fxml"));
+      Parent root = FXMLLoader.load(getClass().getResource("/view/LogIn.fxml"));
       Scene scene = new Scene(root);
-      primaryStage.setTitle("Bovedas");
+      primaryStage.setTitle("LogIn");
       primaryStage.setScene(scene);
-      
+      primaryStage.setResizable(false);
       primaryStage.show();
     } catch (IOException ex) {
       Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);

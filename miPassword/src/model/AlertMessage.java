@@ -5,7 +5,9 @@
  */
 package model;
 
+import java.util.Optional;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.StageStyle;
 
 /**
@@ -17,9 +19,18 @@ public class AlertMessage {
   public static void mensaje(String mensaje) {
     Alert dialogo = new Alert(Alert.AlertType.INFORMATION);
     dialogo.setTitle("Aviso");
-    dialogo.setHeaderText(null);
+    dialogo.setHeaderText("INFORMACIÓN");
     dialogo.setContentText(mensaje);
     dialogo.initStyle(StageStyle.UTILITY);
     dialogo.showAndWait();
+  }
+  
+  public static Optional<ButtonType> confirmacion(String mensaje) {
+    Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION);
+    dialogo.setTitle("Confirmación");
+    dialogo.setHeaderText("Confirmar Eliminación");
+    dialogo.setContentText(mensaje);
+    dialogo.initStyle(StageStyle.UTILITY);
+    return dialogo.showAndWait();
   }
 }

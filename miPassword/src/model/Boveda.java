@@ -60,8 +60,8 @@ public class Boveda {
  
    public final List<Llave> cargarLlaves(){
     llaves = FXCollections.observableArrayList();
-    Llave uno = new Llave("www.website.com", "YISUSK98", "32148");
-    Llave dos = new Llave("www.afsa.com", "OOI", "321815");
+    Llave uno = new Llave("Primera","www.website.com", "YISUSK98", "32148");
+    Llave dos = new Llave("Segunda","www.afsa.com", "OOI", "321815");
     llaves.add(uno);
     llaves.add(dos);
     return llaves;

@@ -22,7 +22,7 @@
             <Image url="@../resources/icons/vault.png" />
          </image>
       </ImageView>
-      <Button fx:id="btnAceptar" layoutX="113.0" layoutY="111.0" mnemonicParsing="false" onMouseClicked="#agregarBoveda" style="-fx-background-color: transparent; -fx-border-color: white;" text="Aceptar" textFill="WHITE">
+      <Button fx:id="btnAceptar" layoutX="113.0" layoutY="111.0" mnemonicParsing="false" onMouseClicked="#editarBoveda" style="-fx-background-color: transparent; -fx-border-color: white;" text="Aceptar" textFill="WHITE">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor>
