@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -38,12 +39,12 @@ public class LogInController implements Initializable {
   @FXML
   private TextField txtCorreo;
   @FXML
-  private TextField txtPassword;
+  private PasswordField txtPass;
   @FXML
   private Button btnIngresar;
   
   private Usuario user;
-
+  
   /**
    * Initializes the controller class.
    */
@@ -71,7 +72,7 @@ public class LogInController implements Initializable {
   }
 
   private boolean validarDatos() {
-    if (txtCorreo.getText().isEmpty() || txtPassword.getText().isEmpty()) {
+    if (txtCorreo.getText().isEmpty() || txtPass.getText().isEmpty()) {
       AlertMessage.mensaje("Por favor ingresar todos los datos solicitados");
       return false;
     }
