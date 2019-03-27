@@ -304,6 +304,7 @@ public class BovedasListController implements Initializable {
           for (Boveda b : bovedas) {
             if (selectedBoveda.equals(b.getNombre())) {
               editada = b;
+              tblLlaves.getItems().clear();
               llaves = editada.cargarLlaves();
               tblLlaves.getItems().addAll(llaves);
               break;
