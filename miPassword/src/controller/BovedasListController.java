@@ -5,10 +5,14 @@
  */
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import model.Boveda;
 import model.Llave;
 import model.Usuario;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +92,8 @@ public class BovedasListController implements Initializable {
 
   private String selectedBoveda;
 
-  private final Usuario owner = new Usuario();
+  private Usuario owner;
+  
 
   /**
    * Initializes the controller class.
@@ -96,8 +101,8 @@ public class BovedasListController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
+    bovedas = new ArrayList<>();
     cargarColumnasLlave();
-    cargarBovedas();
     selectedInLlaves();
     selectedInBovedas();
   }
@@ -169,23 +174,26 @@ public class BovedasListController implements Initializable {
       btnEditarBoveda.setDisable(true);
       for (Boveda b : bovedas) {
         if (b.equals(editada)) {
-          bovedas.remove(b);
-          actualizarListaBovedas(bovedas);
-          AlertMessage.mensaje("Eliminado correctamente de la base de datos");
-          break;
+          if(!b.getLlaves().isEmpty()){
+            AlertMessage.mensaje("No se puede eliminar una bóveda que aún contenga llaves");
+            break;
+          } else {
+            bovedas.remove(b);
+            actualizarListaBovedas(bovedas);
+            AlertMessage.mensaje("Eliminado correctamente");
+            break;
+          }
         }
       }
     }
 
   }
 
-  public void cargarUsuario(Usuario user) {
-    this.lblUsername.setText(user.getUsername());
-
-  }
-
-  public void cargarLlaves() {
-  }
+  /**
+   *
+   * @param id el identificador que se desea buscar
+   * @return usuario el usuario correspondiente al id
+   */
 
   @FXML
   private void nuevaLlave(MouseEvent event) throws IOException {
@@ -231,6 +239,7 @@ public class BovedasListController implements Initializable {
         if (del.equals(selectedLlave)) {
           llaves.remove(del);
           actualizarTablaLlaves(editada);
+          actualizarListaBovedas(bovedas);
           AlertMessage.mensaje("Llave eliminada satisfactoriamente");
           break;
         }
@@ -240,12 +249,16 @@ public class BovedasListController implements Initializable {
     }
   }
 
+  public void cargarUsuario(Usuario user) {
+    this.owner = user;
+    this.lblUsername.setText(user.getCorreo());
+    cargarBovedas();
+  }
   public void cargarBovedas() {
-    bovedas = new ArrayList<>();
-    Boveda b = new Boveda("Uno", owner);
-    bovedas.add(b);
-    listaBovedas.getItems().add(bovedas.get(0).toString());
-
+    bovedas = owner.getBovedas();
+    for(Boveda b : bovedas){
+      listaBovedas.getItems().add(b.toString());
+    }
   }
 
   public void actualizarTablaLlaves(Boveda nueva) {
@@ -305,7 +318,7 @@ public class BovedasListController implements Initializable {
             if (selectedBoveda.equals(b.getNombre())) {
               editada = b;
               tblLlaves.getItems().clear();
-              llaves = editada.cargarLlaves();
+              llaves = editada.getLlaves();
               tblLlaves.getItems().addAll(llaves);
               break;
             }

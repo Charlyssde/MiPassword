@@ -40,13 +40,13 @@
          <center>
             <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
+                   <TextField fx:id="txtCorreo" layoutX="245.0" layoutY="123.0" style="-fx-background-color: #212121; -fx-text-fill: white;" />
                   <PasswordField fx:id="txtPass" layoutX="245.0" layoutY="184.0" style="-fx-background-color: #212121; -fx-text-fill: white;" />
                   <ImageView layoutX="209.0" layoutY="14.0">
                      <image>
                         <Image url="@../resources/icons/ic_usuario_white.png" />
                      </image>
                   </ImageView>
-                  <TextField fx:id="txtCorreo" layoutX="245.0" layoutY="123.0" style="-fx-background-color: #212121; -fx-text-fill: white;" />
                   <Button fx:id="btnIngresar" layoutX="219.0" layoutY="263.0" mnemonicParsing="false" onMouseClicked="#iniciarSesion" style="-fx-background-color: transparent; -fx-border-color: white;" text="Ingresar" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="12.0" />

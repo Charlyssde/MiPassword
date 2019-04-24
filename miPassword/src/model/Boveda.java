@@ -18,7 +18,7 @@ public class Boveda {
   private String nombre;
   private int numLlaves;
   private Usuario owner;
-  private ObservableList<Llave> llaves;
+  private List<Llave> llaves;
   
   public Boveda() {
     

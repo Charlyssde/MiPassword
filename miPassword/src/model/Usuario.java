@@ -5,7 +5,9 @@
  */
 package model;
 
-import model.Boveda;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  *
@@ -13,34 +15,41 @@ import model.Boveda;
  */
 public class Usuario {
   
-  private String username;
+  private int id;
+  public String username;
   private String nombre;
   private String apellido;
   private String telefono;
-  private String password;
-  private String correo;
+  public String password;
+  public String correo;
   private String clavePublica;
   private String clavePrivada;
-  private Boveda[] bovedas;
+  private List<Boveda> bovedas;
   
-  public Usuario() {
+  private final Random rd = new Random();
+
+  public Usuario(String username, String nombre, String apellido, String telefono, 
+      String password, String correo) {
     
-  }
-  
-  public Usuario(String username, String nombre, String apellido, String telefono, String password,
-      String correo, String clavePublica, String clavePrivada) {
     this.username = username;
     this.nombre = nombre;
     this.apellido = apellido;
     this.telefono = telefono;
     this.password = password;
     this.correo = correo;
-    this.clavePublica = clavePublica;
-    this.clavePrivada = clavePrivada;
+    
+    this.id = rd.nextInt(500);
   }
   
-  public Usuario(String username){
-    this.username = username;
+  public Usuario() {
+    
+  }
+  
+  public Usuario(String correo, String password){
+    this.correo = correo;
+    this.password = password;
+    Boveda b = new Boveda("Uno", this);
+    bovedas.add(b);
   }
 
   public String getUsername() {
@@ -107,6 +116,15 @@ public class Usuario {
     this.clavePrivada = clavePrivada;
   }
   
+  public void setBovedas(List<Boveda> bovedas){
+    this.bovedas = bovedas;
+  }
   
+  public ArrayList<Boveda> getBovedas(){
+    Boveda b = new Boveda("Uno", this);
+    bovedas = new ArrayList<>();
+    bovedas.add(b);
+    return (ArrayList<Boveda>)bovedas;
+  }
   
 }
