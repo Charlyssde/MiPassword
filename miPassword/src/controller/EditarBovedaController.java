@@ -33,11 +33,11 @@ public class EditarBovedaController implements Initializable {
   private Button btnAceptar;
   @FXML
   private Button btnGuardar;
-  
+
   private ArrayList<Boveda> bovedas;
-  
+
   private Boveda editar;
-  
+
   private BovedasListController anterior;
 
   /**
@@ -46,20 +46,20 @@ public class EditarBovedaController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // TODO
-  }  
-  
-  public void cargarBoveda(ArrayList<Boveda> listaNueva, Boveda nueva, BovedasListController anterior){
+  }
+
+  public void cargarBoveda(ArrayList<Boveda> listaNueva, Boveda nueva, BovedasListController anterior) {
     editar = nueva;
-    txtNombre.setText(editar.getNombre()); 
+    txtNombre.setText(editar.getNombre());
     this.bovedas = listaNueva;
     this.anterior = anterior;
   }
 
   @FXML
   private void editarBoveda(MouseEvent event) {
-    if(validarNombre()){
-      for(Boveda b : bovedas){
-        if(b.getNombre().equals(editar.getNombre())){
+    if (validarNombre()) {
+      for (Boveda b : bovedas) {
+        if (b.getNombre().equals(editar.getNombre())) {
           b.setNombre(txtNombre.getText());
           anterior.actualizarListaBovedas(bovedas);
           cerrar();
@@ -68,7 +68,7 @@ public class EditarBovedaController implements Initializable {
       }
     }
   }
- 
+
   private boolean validarNombre() {
 
     if (txtNombre.getText().isEmpty()) {
@@ -91,13 +91,13 @@ public class EditarBovedaController implements Initializable {
     }
     return false;
   }
-  
+
   @FXML
   private void cancelar(MouseEvent event) {
     cerrar();
   }
-  
-  public final void cerrar(){
+
+  public final void cerrar() {
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
   }

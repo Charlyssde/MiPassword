@@ -71,7 +71,7 @@
          <bottom>
             <Pane prefHeight="98.0" prefWidth="490.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="lblRegistro" layoutX="112.0" layoutY="14.0" onMouseClicked="#registrarse" text="¿Aún no tienes una cuenta? Regístrate aquí." textFill="WHITE" underline="true">
+                  <Label fx:id="lblRegistro" layoutX="112.0" layoutY="14.0" onMouseClicked="#RegistrarUsuario" text="¿Aún no tienes una cuenta? Regístrate aquí." textFill="WHITE" underline="true">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>

@@ -60,11 +60,6 @@ public class LogInController implements Initializable {
   }
 
   @FXML
-  private void registrarse(MouseEvent event) {
-    //cargarPantallaRegistro();
-  }
-
-  @FXML
   private void iniciarSesion(MouseEvent event) {
     if (validarDatos()) {
       if (validarCorreo()) {
@@ -105,6 +100,11 @@ public class LogInController implements Initializable {
     Pattern pattern = Pattern.compile(PATRON);
     Matcher matcher = pattern.matcher(txtCorreo.getText());
     return matcher.matches();
+  }
+
+  @FXML
+  private void RegistrarUsuario(MouseEvent event) {
+    cargarPantallaRegistro();
   }
 
   private void cargarPantallaRegistro() {

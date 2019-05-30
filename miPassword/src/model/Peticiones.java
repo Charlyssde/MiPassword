@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class Peticiones {
 
-  private static final String SITE = "http://localhost:5000/";
-  
+  private static final String SITE = "http://localhost:3306/";
+
   public static int responseCode;
 
   public static Usuario Login(Login login) {
@@ -44,7 +44,7 @@ public class Peticiones {
       writer.write(json);
       writer.close();
       outputStream.close();
-      
+
       responseCode = conn.getResponseCode();
       if (conn.getResponseCode() == 200) {
         InputStreamReader isr = new InputStreamReader(conn.getInputStream());
@@ -56,18 +56,48 @@ public class Peticiones {
       responseCode = 0;
     } catch (java.io.IOException e) {
       System.out.println("Exception " + e.getMessage());
-    } 
+    }
     return usuario;
+  }
+
+  public static int RegistrarNuevo(Usuario nuevo) {
+    
+    try {
+      URL url = new URL(SITE + "api/Usuario");
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      conn.setDoOutput(true);
+      conn.setRequestProperty("Content-Type", "application/json");
+      conn.setRequestProperty("Accept", "application/json");
+      conn.setConnectTimeout(3000);
+      Gson gson = new Gson();
+      String json = gson.toJson(nuevo);
+      conn.setRequestMethod("PUT");
+      conn.connect();
+      OutputStream outputStream = conn.getOutputStream();
+      BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+      writer.write(json);
+      writer.close();
+      outputStream.close();
+
+      responseCode = conn.getResponseCode();
+      
+    } catch (java.net.SocketTimeoutException e) {
+      responseCode = 0;
+    } catch (java.io.IOException e) {
+      responseCode = 0;
+    }
+    
+    return responseCode;
   }
 
   public static int EditarDatos(Usuario user, int id) {
     return 0;
   }
 
-  public static List<Boveda> AllBovedas( Usuario user) {
+  public static List<Boveda> AllBovedas(Usuario user) {
     List<Boveda> bovedas = new ArrayList<>();
-try {
-      URL url = new URL(SITE );
+    try {
+      URL url = new URL(SITE);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("GET");
       conn.setRequestProperty("Accept", "application/json");
@@ -79,7 +109,7 @@ try {
         };
         bovedas = new Gson().fromJson(isr, token.getType());
       }
-      
+
     } catch (java.net.SocketTimeoutException e) {
       System.out.println("TimeoutException");
     } catch (java.io.IOException e) {
@@ -87,16 +117,16 @@ try {
     }
     return bovedas;
   }
-  
-  public static int EditarBoveda(Boveda boveda, int id){
+
+  public static int EditarBoveda(Boveda boveda, int id) {
     return 0;
   }
-  
-  public static int AgregarBoveda(Boveda boveda){
+
+  public static int AgregarBoveda(Boveda boveda) {
     return 0;
   }
-  
-  public static List<Llave> AllLlaves (Boveda boveda){
+
+  public static List<Llave> AllLlaves(Boveda boveda) {
     List<Llave> llaves = new ArrayList<>();
     try {
       URL url = new URL(SITE);
@@ -111,20 +141,20 @@ try {
         };
         llaves = new Gson().fromJson(isr, token.getType());
       }
-      
+
     } catch (java.net.SocketTimeoutException e) {
       System.out.println("TimeoutException");
     } catch (java.io.IOException e) {
       System.out.println("Exception " + e.getMessage());
-    } 
+    }
     return llaves;
   }
-  
-  public static int AgregarLlave(Llave llave){
+
+  public static int AgregarLlave(Llave llave) {
     return 0;
   }
-  
-  public static int EditarLlave(Llave llave, int id){
+
+  public static int EditarLlave(Llave llave, int id) {
     return 0;
   }
 

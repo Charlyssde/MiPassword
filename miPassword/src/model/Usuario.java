@@ -5,6 +5,7 @@
  */
 package model;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,14 +16,13 @@ import java.util.Random;
  */
 public class Usuario {
   
-  private int id;
-  public String username;
+  private String username;
   private String nombre;
   private String apellido;
   private String telefono;
-  public String password;
-  public String correo;
-  private String clavePublica;
+  private String password;
+  private String correo;
+  private PublicKey clavePublica;
   private String clavePrivada;
   private List<Boveda> bovedas;
   
@@ -37,8 +37,6 @@ public class Usuario {
     this.telefono = telefono;
     this.password = password;
     this.correo = correo;
-    
-    this.id = rd.nextInt(500);
   }
   
   public Usuario() {
@@ -48,8 +46,7 @@ public class Usuario {
   public Usuario(String correo, String password){
     this.correo = correo;
     this.password = password;
-    Boveda b = new Boveda("Uno", this);
-    bovedas.add(b);
+    bovedas = new ArrayList<>();
   }
 
   public String getUsername() {
@@ -100,11 +97,11 @@ public class Usuario {
     this.correo = correo;
   }
 
-  public String getClavePublica() {
+  public PublicKey getClavePublica() {
     return clavePublica;
   }
 
-  public void setClavePublica(String clavePublica) {
+  public void setClavePublica(PublicKey clavePublica) {
     this.clavePublica = clavePublica;
   }
 
@@ -121,9 +118,6 @@ public class Usuario {
   }
   
   public ArrayList<Boveda> getBovedas(){
-    Boveda b = new Boveda("Uno", this);
-    bovedas = new ArrayList<>();
-    bovedas.add(b);
     return (ArrayList<Boveda>)bovedas;
   }
   
