@@ -6,7 +6,7 @@
 package controller;
 
 import java.net.URL;
-import java.util.ArrayList;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -16,9 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import mipasswordinterface.Boveda;
+import mipasswordinterface.Llave;
 import model.AlertMessage;
-import model.Boveda;
-import model.Llave;
 
 /**
  * FXML Controller class
@@ -49,6 +49,7 @@ public class EditarLlaveController implements Initializable {
   private Llave selectedLlave;
   
   private List<Llave> llaves;
+  private Client cliente;
 
 
   /**
@@ -60,7 +61,7 @@ public class EditarLlaveController implements Initializable {
   }  
 
   @FXML
-  private void guardarLlave(MouseEvent event) {
+  private void guardarLlave(MouseEvent event) throws RemoteException {
     if(validarDatos()){
       for(Llave key : llaves){
         if(key.equals(selectedLlave)){
@@ -68,7 +69,12 @@ public class EditarLlaveController implements Initializable {
           key.setPassword(txtPassword.getText());
           key.setUrl(txtUrl.getText());
           key.setUsername(txtUsuario.getText());
-          anterior.actualizarTablaLlaves(editada);
+          Llave aux = new Llave(txtNombreLlave.getText(), txtUrl.getText(), 
+              txtUsuario.getText(), txtPassword.getText(), editada, selectedLlave.getId());
+          cliente.server.editarLlave(aux);
+          anterior.actualizarTablaLlaves(editada, cliente);
+          AlertMessage.mensaje("Se han modificado los datos exitosamente");
+          cerrarVentana();
           break;
         }
       }
@@ -94,7 +100,9 @@ public class EditarLlaveController implements Initializable {
     stage.close();
   }
 
-  public void cargarDatos(BovedasListController anterior, Boveda editada, Llave selectedLlave, List<Llave> llaves) {
+  public void cargarDatos(BovedasListController anterior, Boveda editada, 
+      Llave selectedLlave, List<Llave> llaves, Client cl) {
+    this.cliente = cl;
     this.anterior = anterior;
     this.editada = editada;
     this.selectedLlave = selectedLlave;

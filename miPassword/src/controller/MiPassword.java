@@ -6,6 +6,7 @@
 package controller;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -19,11 +20,19 @@ import javafx.stage.Stage;
  * @author texch
  */
 public class MiPassword extends Application {
+  public Client c;
   
   @Override
-  public void start(Stage primaryStage) {
+  public void start(Stage primaryStage) throws RemoteException {
+    
+     c = new Client();
+    c.iniciarClient();
     try {
-      Parent root = FXMLLoader.load(getClass().getResource("/view/LogIn.fxml"));
+      FXMLLoader loader = new FXMLLoader();
+      loader.setLocation(getClass().getResource("/view/LogIn.fxml"));
+      Parent root = loader.load();
+      LogInController display = loader.getController();
+      display.CargarCliente(c);
       Scene scene = new Scene(root);
       primaryStage.setTitle("LogIn");
       primaryStage.setScene(scene);

@@ -7,6 +7,9 @@ package controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,10 +27,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import model.AlertMessage;
-import model.Login;
-import model.Peticiones;
-import model.Usuario;
+import mipasswordinterface.Usuario;
+import mipasswordinterface.Login;
+import model.AES;
 
 /**
  * FXML Controller class
@@ -47,46 +53,43 @@ public class LogInController implements Initializable {
   @FXML
   private Button btnIngresar;
 
-  private Usuario user;
+  private Usuario user = null;
 
   private final String PATRON = "^(.+)@(.+)$";
+
+  private Client cliente;
 
   /**
    * Initializes the controller class.
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    
+    try {
+      cliente = new Client();
+    } catch (RemoteException ex) {
+      Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+    }
 
   }
 
   @FXML
-  private void iniciarSesion(MouseEvent event) {
+  private void iniciarSesion(MouseEvent event) throws RemoteException {
     if (validarDatos()) {
       if (validarCorreo()) {
-        Login intento = new Login(txtCorreo.getText(), txtPass.getText());
-        user = Peticiones.Login(intento);
-        if (user == null) {
-          int resp = Peticiones.responseCode;
-          if (resp == 0) {
-            AlertMessage.mensaje("No se pudo conectar con el servidor, intente de nuevo más tarde");
-          } else {
-            if (resp == 404) {
-              AlertMessage.mensaje("Usuario no encontrado");
-            }
-            if (resp >= 400 && resp < 500 && resp != 404) {
-              AlertMessage.mensaje("Bad Request");
-            }
-            if (resp >= 500 || resp < 200) {
-              AlertMessage.mensaje("Ocurrió un error en el servidor, intente de nuevo");
-            }
-          }
-
-        } else {
+        //String pass = desencriptarPassword(txtPass.getText());
+        Login temp = new Login(txtCorreo.getText(),txtPass.getText() );
+        user = cliente.server.LogIn(temp);
+        if (user != null) {
           cargarPantallaBovedas();
+        } else {
+          AlertMessage.mensaje("No se ha encontrado el usuario deseado, ingrese datos correctos");
         }
+
       } else {
         AlertMessage.mensaje("El correo ingresado no es válido, inserte uno válido");
       }
+
     } else {
       AlertMessage.mensaje("Por favor ingresar todos los datos solicitados");
     }
@@ -114,6 +117,8 @@ public class LogInController implements Initializable {
       loader.load();
       AnchorPane root = loader.getRoot();
       Scene scene = new Scene(root);
+      RegistroController display = loader.getController();
+      display.cargarCliente(cliente);
       Stage primaryStage = new Stage();
       primaryStage.setTitle("Registro");
       primaryStage.setScene(scene);
@@ -132,7 +137,7 @@ public class LogInController implements Initializable {
       loader.load();
       AnchorPane root = loader.getRoot();
       BovedasListController ventana = loader.getController();
-      ventana.cargarUsuario(this.user);
+      ventana.cargarUsuario(this.user, cliente);
       Scene scene = new Scene(root);
       Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
       primaryStage.setTitle("Bovedas");
@@ -143,5 +148,31 @@ public class LogInController implements Initializable {
       Logger.getLogger(MiPassword.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
+
+  public void CargarCliente(Client c) {
+    this.cliente = c;
+  }
+
+  private String desencriptarPassword(String text) throws RemoteException {
+    user = cliente.server.getUsuario(txtCorreo.getText(), txtPass.getText());
+    String passDec = "";
+    try {
+      AES cript = new AES(user);
+       passDec = cript.DecryptPassword(user.getPassword());
+    } catch (NoSuchAlgorithmException ex) {
+      Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (NoSuchPaddingException ex) {
+      Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (InvalidKeyException ex) {
+      Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (IllegalBlockSizeException ex) {
+      Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (BadPaddingException ex) {
+      Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return passDec;
+  }
+  
 
 }

@@ -19,11 +19,6 @@
          <top>
             <Pane prefHeight="60.0" prefWidth="406.0" style="-fx-background-color: transparent; -fx-border-color: transparent;" BorderPane.alignment="CENTER">
                <children>
-                  <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="199.0" layoutY="8.0">
-                     <image>
-                        <Image url="@../resources/icons/ic_usuario_white.png" />
-                     </image>
-                  </ImageView>
                   <Label fx:id="lblUsername" layoutX="244.0" layoutY="15.0" prefHeight="30.0" prefWidth="150.0" text="USERNAME" textFill="WHITE">
                      <font>
                         <Font name="System Bold" size="13.0" />
@@ -52,6 +47,18 @@
                         <Image url="@../resources/icons/ic_boveda_white.png" />
                      </image>
                   </ImageView>
+                  <Button fx:id="btnUsuario" layoutX="183.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#editarDatosUsuario" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="45.0" fitWidth="45.0">
+                           <image>
+                              <Image url="@../resources/icons/ic_usuario_white.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
                </children>
             </Pane>
          </top>

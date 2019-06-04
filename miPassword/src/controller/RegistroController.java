@@ -6,6 +6,7 @@
 package controller;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,9 +19,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import mipasswordinterface.Usuario;
 import model.AlertMessage;
-import model.Peticiones;
-import model.Usuario;
 
 /**
  * FXML Controller class
@@ -38,8 +38,6 @@ public class RegistroController implements Initializable {
   @FXML
   private TextField txtUsername;
   @FXML
-  private Label lblVerificarNumero;
-  @FXML
   private TextField txtPassword;
   @FXML
   private TextField txtCorreo;
@@ -52,7 +50,12 @@ public class RegistroController implements Initializable {
 
   private final String PATRON = "^(.+)@(.+)$";
   @FXML
-  private Label lblInfo;
+  private Label lblVer;
+  @FXML
+  private Label lblVer1;
+  @FXML
+  private TextField txtPassReveal;
+  private Client cliente;
 
   /**
    * Initializes the controller class.
@@ -63,43 +66,27 @@ public class RegistroController implements Initializable {
   }
 
   @FXML
-  private void verificarNumeroTelefonico(MouseEvent event) {
-
-  }
-
-  @FXML
-  private void guardarUsuario(MouseEvent event) {
+  private void guardarUsuario(MouseEvent event) throws RemoteException {
     if (camposVacios()) {
       AlertMessage.mensaje("No pueden quedar campos vacíos");
     } else if (!validarCorreo()) {
       AlertMessage.mensaje("El correo electrónico no es válido, inserte otro");
       txtCorreo.clear();
     } else {
+
       Usuario nuevo = new Usuario(txtUsername.getText(), txtNombres.getText(),
           txtApellidos.getText(), txtTelefono.getText(), txtPassword.getText(),
           txtCorreo.getText());
-      Peticiones.RegistrarNuevo(nuevo);
-      int result = Peticiones.responseCode;
-      if (result == 200) {
-        AlertMessage.mensaje("Registro exitoso, pruebe a iniciar sesión desde la pantalla de login.");
-        Stage stage = (Stage) anchorPane.getScene().getWindow();
-        stage.close();
-      } else {
-        if (result == 400) {
-          AlertMessage.mensaje("Ya existe un usuario con este nombre, seleccione otro, por favor.");
-          txtUsername.clear();
-        }
-        if (result == 0) {
-          AlertMessage.mensaje("No se pudo conectar con el servidor, intente de nuevo más tarde");
-        } else {
-          if (result >= 400 && result < 500 && result != 404) {
-            AlertMessage.mensaje("Ocurrió un problema al intentar guardar el usuario, inténtelo más tarde");
-          }
-          if (result >= 500 || result < 200) {
-            AlertMessage.mensaje("Ocurrió un error en el servidor, intente de nuevo");
-          }
-        }
-      }
+      /*AES cript = new AES(nuevo);
+      cript.genKeyPair(512);
+      
+      String newPass = cript.EncryptPassword(nuevo.getPassword());
+      nuevo.setPassword(newPass);
+      */
+      cliente.server.registrarUsuario(nuevo);
+      AlertMessage.mensaje("Registro guardado exitosamente, inicie sesión nuevamente");
+      Stage stage = (Stage) anchorPane.getScene().getWindow();
+      stage.close();
     }
   }
 
@@ -107,6 +94,10 @@ public class RegistroController implements Initializable {
   private void cencelarRegistro(MouseEvent event) {
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
+  }
+
+  public void cargarCliente(Client cl) {
+    this.cliente = cl;
   }
 
   private boolean camposVacios() {
@@ -123,6 +114,22 @@ public class RegistroController implements Initializable {
 
   @FXML
   private void ingresarPassword(KeyEvent event) {
+    lblVer.setVisible(true);
+    lblVer.setDisable(false);
+  }
+
+  @FXML
+  private void hidePassword(MouseEvent event) {
+    this.txtPassword.setVisible(true);
+    this.txtPassReveal.setVisible(false);
+  }
+
+  @FXML
+  private void revealPassword(MouseEvent event) {
+    this.txtPassReveal.setText(txtPassword.getText());
+    this.txtPassword.setVisible(false);
+    this.txtPassReveal.setVisible(true);
+
   }
 
 }

@@ -6,8 +6,10 @@
 package controller;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,9 +18,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import mipasswordinterface.Boveda;
+import mipasswordinterface.Llave;
 import model.AlertMessage;
-import model.Boveda;
-import model.Llave;
+
 
 /**
  * FXML Controller class
@@ -47,6 +50,7 @@ public class AgregarLlaveController implements Initializable {
   private BovedasListController anterior;
   
   private List<Boveda> nuevaLista;
+  private Client cliente;
 
   /**
    * Initializes the controller class.
@@ -58,18 +62,21 @@ public class AgregarLlaveController implements Initializable {
 
  
   @FXML
-  private void guardarLlave(MouseEvent event) {
+  private void guardarLlave(MouseEvent event) throws RemoteException {
     if(validarDatos()){
-      Llave nueva = new Llave(txtNombreLlave.getText(),txtUrl.getText(), txtUsuario.getText(), txtPassword.getText());
+      Llave nueva = new Llave(txtNombreLlave.getText(),txtUrl.getText(), txtUsuario.getText(), 
+          txtPassword.getText(), owner, (new Random()).nextInt());
       for(Boveda b : nuevaLista){
         if(b.getNombre().equals(owner.getNombre())){
-          b.cargarLlaves().add(nueva);
-          anterior.actualizarTablaLlaves(owner);
+          cliente.server.agregarLlave(nueva);
+          nuevaLista = cliente.server.getAllBovedas(owner.getOwner().getUsername());
+          anterior.actualizarTablaLlaves(owner, cliente);
           anterior.actualizarListaBovedas((ArrayList<Boveda>)nuevaLista);
           cerrar();
+          AlertMessage.mensaje("Se ha guardado exitosamente la nueva llave");
         }
       }
-    } 
+    }
   }
 
   @FXML
@@ -100,7 +107,8 @@ public class AgregarLlaveController implements Initializable {
     return false;
   }
   
-  public void cargarDatos(BovedasListController anterior,Boveda owner, ArrayList<Boveda> nuevaLista){
+  public void cargarDatos(BovedasListController anterior,Boveda owner, ArrayList<Boveda> nuevaLista, Client cl){
+    this.cliente = cl;
     this.nuevaLista = nuevaLista;
     this.anterior = anterior;
     this.owner = owner;  

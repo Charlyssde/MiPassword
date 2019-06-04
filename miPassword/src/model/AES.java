@@ -23,6 +23,7 @@ import java.security.PublicKey;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.logging.Level;
@@ -33,6 +34,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import mipasswordinterface.Usuario;
 
 public class AES {
 
@@ -45,6 +47,7 @@ public class AES {
   private static Usuario user;
   
   private static byte [] privEncoded;
+  private static byte [] pubEncoded;
 
   public AES(Usuario usuario) {
     user = usuario;
@@ -107,20 +110,25 @@ public class AES {
     PublicKey = publicKey;
     
      privEncoded = PrivateKey.getEncoded();
-
+     pubEncoded =  PublicKey.getEncoded();
+     
     String prKEnc = new String(privEncoded);
     String prK = encrypt(prKEnc);
+    
+    String pubKEnc = new String(pubEncoded);
+    String pubK = encrypt(pubKEnc);
 
-    user.setClavePublica(PublicKey);
+    user.setClavePublica(pubK);
     user.setClavePrivada(prK);
   }
 
   public String EncryptPassword(String plain) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, UnsupportedEncodingException, NoSuchProviderException {
 
+    PublicKey pub = convertStringToPublic();
     byte[] encryptedBytes;
 
     Cipher cipher = Cipher.getInstance("RSA");
-    cipher.init(Cipher.ENCRYPT_MODE, user.getClavePublica());
+    cipher.init(Cipher.ENCRYPT_MODE, pub);
     encryptedBytes = cipher.doFinal(plain.getBytes());
 
     return bytesToString(encryptedBytes);
@@ -164,6 +172,21 @@ public class AES {
     }
     
     return priv;
+  }
+  
+  private PublicKey convertStringToPublic(){
+    PublicKey pub = null;
+    try { 
+      byte[] publicKeyBytes = pubEncoded;
+      KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+      EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+      pub = keyFactory.generatePublic(publicKeySpec);
+    } catch (NoSuchAlgorithmException ex) {
+      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (InvalidKeySpecException ex) {
+      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return pub;
   }
 
   public static void main(String[] args) {

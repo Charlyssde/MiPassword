@@ -5,15 +5,12 @@
  */
 package controller;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import model.Boveda;
-import model.Llave;
-import model.Usuario;
+//import model.Boveda;
+//import model.Llave;
+//import model.Usuario;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +37,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mipasswordinterface.Boveda;
+import mipasswordinterface.Llave;
+import mipasswordinterface.Usuario;
 import model.AlertMessage;
 
 /**
@@ -94,6 +94,10 @@ public class BovedasListController implements Initializable {
 
   private Usuario owner;
   
+  private Client cliente;
+  @FXML
+  private Button btnUsuario;
+  
 
   /**
    * Initializes the controller class.
@@ -109,8 +113,13 @@ public class BovedasListController implements Initializable {
 
   @FXML
   private void salir(MouseEvent event) {
+    
     try {
-      Parent root = FXMLLoader.load(getClass().getResource("/view/LogIn.fxml"));
+      FXMLLoader loader = new FXMLLoader();
+      loader.setLocation(getClass().getResource("/view/LogIn.fxml"));
+      Parent root = loader.load();
+      LogInController display = loader.getController();
+      display.CargarCliente(cliente);
       Scene scene = new Scene(root);
       Stage primaryStage = (Stage) anchorPane.getScene().getWindow();
       primaryStage.setTitle("LogIn");
@@ -130,7 +139,7 @@ public class BovedasListController implements Initializable {
       loader.load();
       AnchorPane root = loader.getRoot();
       AgregarBovedaController ventana = loader.getController();
-      ventana.cargarObjetos(this, this.bovedas, this.owner);
+      ventana.cargarObjetos(this, this.bovedas, this.owner, cliente);
       Scene scene = new Scene(root);
       Stage primaryStage = new Stage();
       primaryStage.setTitle("Agregar Boveda");
@@ -152,7 +161,7 @@ public class BovedasListController implements Initializable {
       loader.load();
       AnchorPane edit = loader.getRoot();
       EditarBovedaController editBoveda = loader.getController();
-      editBoveda.cargarBoveda(bovedas, editada, this);
+      editBoveda.cargarBoveda(bovedas, editada, this, cliente);
       Scene scene = new Scene(edit);
       Stage primaryStage = new Stage();
       primaryStage.setTitle("Editar Boveda");
@@ -167,17 +176,18 @@ public class BovedasListController implements Initializable {
   }
 
   @FXML
-  private void eliminarBoveda(MouseEvent event) {
-    Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la llave?");
+  private void eliminarBoveda(MouseEvent event) throws RemoteException {
+    Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la bóveda?");
     if (result.get() == ButtonType.OK) {
       btnEliminarBoveda.setDisable(true);
       btnEditarBoveda.setDisable(true);
       for (Boveda b : bovedas) {
         if (b.equals(editada)) {
-          if(!b.getLlaves().isEmpty()){
+          if(!cliente.server.getAllLlaves(b).isEmpty()){
             AlertMessage.mensaje("No se puede eliminar una bóveda que aún contenga llaves");
             break;
           } else {
+            cliente.server.eliminarBoveda(b);
             bovedas.remove(b);
             actualizarListaBovedas(bovedas);
             AlertMessage.mensaje("Eliminado correctamente");
@@ -202,7 +212,7 @@ public class BovedasListController implements Initializable {
     loader.load();
     AnchorPane root = loader.getRoot();
     AgregarLlaveController ventana = loader.getController();
-    ventana.cargarDatos(this, this.editada, this.bovedas);
+    ventana.cargarDatos(this, this.editada, this.bovedas, cliente);
     Scene scene = new Scene(root);
     Stage primaryStage = new Stage();
     primaryStage.setTitle("Agregar Llave");
@@ -220,7 +230,7 @@ public class BovedasListController implements Initializable {
     loader.load();
     AnchorPane root = loader.getRoot();
     EditarLlaveController ventana = loader.getController();
-    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves);
+    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves, cliente);
     Scene scene = new Scene(root);
     Stage primaryStage = new Stage();
     primaryStage.setTitle("Editar Llave");
@@ -232,13 +242,14 @@ public class BovedasListController implements Initializable {
   }
 
   @FXML
-  private void eliminarLlave(MouseEvent event) {
+  private void eliminarLlave(MouseEvent event) throws RemoteException {
     Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la llave?");
     if (result.get() == ButtonType.OK) {
       for (Llave del : llaves) {
         if (del.equals(selectedLlave)) {
+          cliente.server.eliminarLlave(del);
           llaves.remove(del);
-          actualizarTablaLlaves(editada);
+          actualizarTablaLlaves(editada, cliente);
           actualizarListaBovedas(bovedas);
           AlertMessage.mensaje("Llave eliminada satisfactoriamente");
           break;
@@ -249,21 +260,24 @@ public class BovedasListController implements Initializable {
     }
   }
 
-  public void cargarUsuario(Usuario user) {
+  public void cargarUsuario(Usuario user, Client c) throws RemoteException {
+     this.cliente = c;
     this.owner = user;
-    this.lblUsername.setText(user.getCorreo());
+    this.lblUsername.setText(user.getNombre());
     cargarBovedas();
   }
-  public void cargarBovedas() {
-    bovedas = owner.getBovedas();
+  public void cargarBovedas() throws RemoteException {
+    bovedas = cliente.server.getAllBovedas(owner.getUsername());
+    System.out.println(bovedas.size());
     for(Boveda b : bovedas){
       listaBovedas.getItems().add(b.toString());
     }
   }
 
-  public void actualizarTablaLlaves(Boveda nueva) {
+  public void actualizarTablaLlaves(Boveda nueva, Client cl) throws RemoteException {
+    this.cliente = cl;
     tblLlaves.getItems().clear();
-    llaves = nueva.getLlaves();
+    llaves = cliente.server.getAllLlaves(nueva);
     tblLlaves.getItems().addAll(llaves);
   }
 
@@ -318,7 +332,11 @@ public class BovedasListController implements Initializable {
             if (selectedBoveda.equals(b.getNombre())) {
               editada = b;
               tblLlaves.getItems().clear();
-              llaves = editada.getLlaves();
+              try {
+                llaves = cliente.server.getAllLlaves(b);
+              } catch (RemoteException ex) {
+                Logger.getLogger(BovedasListController.class.getName()).log(Level.SEVERE, null, ex);
+              }
               tblLlaves.getItems().addAll(llaves);
               break;
             }
@@ -333,5 +351,29 @@ public class BovedasListController implements Initializable {
       }
 
     });
+  }
+
+  @FXML
+  private void editarDatosUsuario(MouseEvent event) throws IOException {
+    FXMLLoader loader = new FXMLLoader();
+    loader.setLocation(getClass().getResource("/view/editarUsuario.fxml"));
+    loader.load();
+    AnchorPane root = loader.getRoot();
+    EditarUsuarioController ventana = loader.getController();
+    ventana.cargarDatos(owner,cliente,this);
+    Scene scene = new Scene(root);
+    Stage primaryStage = new Stage();
+    primaryStage.setTitle("Editar Usuario");
+    primaryStage.setScene(scene);
+    primaryStage.initModality(Modality.APPLICATION_MODAL);
+    primaryStage.show();
+    btnEditarLlave.setDisable(true);
+    btnEliminarLlave.setDisable(true);
+    
+  }
+
+  void actualizarUsuario(Usuario usuario) {
+    lblUsername.setText(usuario.getNombre());
+    
   }
 }

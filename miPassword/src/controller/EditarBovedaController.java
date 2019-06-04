@@ -6,6 +6,7 @@
 package controller;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -15,8 +16,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import mipasswordinterface.Boveda;
 import model.AlertMessage;
-import model.Boveda;
 
 /**
  * FXML Controller class
@@ -39,6 +40,7 @@ public class EditarBovedaController implements Initializable {
   private Boveda editar;
 
   private BovedasListController anterior;
+  private Client cliente;
 
   /**
    * Initializes the controller class.
@@ -48,7 +50,8 @@ public class EditarBovedaController implements Initializable {
     // TODO
   }
 
-  public void cargarBoveda(ArrayList<Boveda> listaNueva, Boveda nueva, BovedasListController anterior) {
+  public void cargarBoveda(ArrayList<Boveda> listaNueva, Boveda nueva, BovedasListController anterior, Client c) {
+    this.cliente = c;
     editar = nueva;
     txtNombre.setText(editar.getNombre());
     this.bovedas = listaNueva;
@@ -56,11 +59,12 @@ public class EditarBovedaController implements Initializable {
   }
 
   @FXML
-  private void editarBoveda(MouseEvent event) {
+  private void editarBoveda(MouseEvent event) throws RemoteException {
     if (validarNombre()) {
       for (Boveda b : bovedas) {
         if (b.getNombre().equals(editar.getNombre())) {
           b.setNombre(txtNombre.getText());
+          cliente.server.editarBoveda(b);
           anterior.actualizarListaBovedas(bovedas);
           cerrar();
           AlertMessage.mensaje("Se ha actualizado con exito");
