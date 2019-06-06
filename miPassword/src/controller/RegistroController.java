@@ -6,7 +6,6 @@
 package controller;
 
 import java.net.URL;
-import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,12 +19,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import mipasswordinterface.Usuario;
+import model.AES;
 import model.AlertMessage;
 
 /**
- * FXML Controller class
+ * Clase controller encargada de realizar el registro de un usuario
  *
- * @author texch
+ * @author Carlos Carrillo
  */
 public class RegistroController implements Initializable {
 
@@ -52,8 +52,6 @@ public class RegistroController implements Initializable {
   @FXML
   private Label lblVer;
   @FXML
-  private Label lblVer1;
-  @FXML
   private TextField txtPassReveal;
   private Client cliente;
 
@@ -65,8 +63,13 @@ public class RegistroController implements Initializable {
     // TODO
   }
 
+  /**
+   * Realiza la creación de un usuario y lo guarda.
+   * @param event el click del mouse sobre el botón de guardar
+   * @throws Exception 
+   */
   @FXML
-  private void guardarUsuario(MouseEvent event) throws RemoteException {
+  private void guardarUsuario(MouseEvent event) throws Exception {
     if (camposVacios()) {
       AlertMessage.mensaje("No pueden quedar campos vacíos");
     } else if (!validarCorreo()) {
@@ -77,12 +80,9 @@ public class RegistroController implements Initializable {
       Usuario nuevo = new Usuario(txtUsername.getText(), txtNombres.getText(),
           txtApellidos.getText(), txtTelefono.getText(), txtPassword.getText(),
           txtCorreo.getText());
-      /*AES cript = new AES(nuevo);
+      AES cript = new AES(nuevo);
       cript.genKeyPair(512);
       
-      String newPass = cript.EncryptPassword(nuevo.getPassword());
-      nuevo.setPassword(newPass);
-      */
       cliente.server.registrarUsuario(nuevo);
       AlertMessage.mensaje("Registro guardado exitosamente, inicie sesión nuevamente");
       Stage stage = (Stage) anchorPane.getScene().getWindow();
@@ -90,40 +90,77 @@ public class RegistroController implements Initializable {
     }
   }
 
+  
+  /**
+   * Cierra la ventana de registro sin relalizar acciones.
+   * 
+   * @param event evento del click en el boton de cancelar
+   * 
+   */
   @FXML
   private void cencelarRegistro(MouseEvent event) {
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
   }
 
+  
+  /**
+   * Carga el cliente que se encargará de conectar con el servidor 
+   * @param cl cliente que se encuentra conectado al servidor para realizar las peticiones
+   */
   public void cargarCliente(Client cl) {
     this.cliente = cl;
   }
 
+  
+  /**
+   * Metodo para verificar que no haya campos vacíos
+   * 
+   * @return si algun campo se encuentra vacío 
+   */
   private boolean camposVacios() {
     return (txtCorreo.getText().isEmpty() || txtPassword.getText().isEmpty()
         || txtNombres.getText().isEmpty() || txtApellidos.getText().isEmpty()
         || txtUsername.getText().isEmpty() || txtTelefono.getText().isEmpty());
   }
 
+  
+  /**
+   * Metodo para validar que el campo de correo siga el patron de un corero electronico.
+   * 
+   * @return si es un correo valido o no.
+   */
   private boolean validarCorreo() {
     Pattern pattern = Pattern.compile(PATRON);
     Matcher matcher = pattern.matcher(txtCorreo.getText());
     return matcher.matches();
   }
 
+  /**
+   * Metodo que habilita la etiqueta para ver la contraseña ingresada
+   * @param event tecla
+   */
   @FXML
   private void ingresarPassword(KeyEvent event) {
     lblVer.setVisible(true);
     lblVer.setDisable(false);
   }
 
+  
+  /**
+   * Metodo para ocultar el valor textual de la contraseña
+   * @param event quitar click presionado sobre la etiqueta VER
+   */
   @FXML
   private void hidePassword(MouseEvent event) {
     this.txtPassword.setVisible(true);
     this.txtPassReveal.setVisible(false);
   }
 
+  /**
+   * método para revelar el valor textual de la contraseña
+   * @param event click presionado sobre la etiqueta VER
+   */
   @FXML
   private void revealPassword(MouseEvent event) {
     this.txtPassReveal.setText(txtPassword.getText());

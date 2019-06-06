@@ -9,7 +9,6 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,7 +23,7 @@ import model.AlertMessage;
 
 
 /**
- * FXML Controller class
+ * Clase controller encargada de agregar una nueva llave
  *
  * @author texch
  */
@@ -61,58 +60,66 @@ public class AgregarLlaveController implements Initializable {
   }  
 
  
+  /**
+   * evento que guarda una nueva llave
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void guardarLlave(MouseEvent event) throws RemoteException {
+    
     if(validarDatos()){
       Llave nueva = new Llave(txtNombreLlave.getText(),txtUrl.getText(), txtUsuario.getText(), 
-          txtPassword.getText(), owner, (new Random()).nextInt());
-      for(Boveda b : nuevaLista){
-        if(b.getNombre().equals(owner.getNombre())){
+          txtPassword.getText(), owner);
           cliente.server.agregarLlave(nueva);
-          nuevaLista = cliente.server.getAllBovedas(owner.getOwner().getUsername());
+          anterior.actualizarListaBovedas();
           anterior.actualizarTablaLlaves(owner, cliente);
-          anterior.actualizarListaBovedas((ArrayList<Boveda>)nuevaLista);
+          
           cerrar();
           AlertMessage.mensaje("Se ha guardado exitosamente la nueva llave");
-        }
-      }
     }
   }
 
+  /**
+   * evento que cierra la ventana
+   * @param event 
+   */
   @FXML
   private void cancelar(MouseEvent event) {
     cerrar();
   }
    
   
+  /**
+   * metodo que devuelve si hay o no campos vacios
+   * @return true si no hay campos vacios, false si hay campos vacios
+   */
   private boolean validarDatos(){
     if(txtNombreLlave.getText().isEmpty() || txtPassword.getText().isEmpty() ||
         txtUrl.getText().isEmpty() || txtUsuario.getText().isEmpty()){
       AlertMessage.mensaje("No pueden quedar campos vacíos");
       return false;
-    } else if(yaExiste()){
-      AlertMessage.mensaje("Ya existe una bóveda con ese nombre, no pueden existir dos iguales");
-      return false;
-    }
+    } 
     return true;
   }
   
-  private boolean yaExiste(){
-    List<Llave> hermanas = owner.getLlaves();
-    for(Llave key : hermanas){
-      if(txtNombreLlave.getText().equals(key.getNombre())){
-        return true;
-      }
-    }
-    return false;
-  }
-  
+  /**
+   * metodo para cargar los datos necesarios para la adición de la boveda
+   * @param anterior pantalla anterior
+   * @param owner dueño de la boveda
+   * @param nuevaLista lista con las bovedas actuales
+   * @param cl  cliente conectado al servidor
+   */
   public void cargarDatos(BovedasListController anterior,Boveda owner, ArrayList<Boveda> nuevaLista, Client cl){
     this.cliente = cl;
     this.nuevaLista = nuevaLista;
     this.anterior = anterior;
     this.owner = owner;  
   }
+  
+  /**
+   * metodo para cerrar la ventana actual
+   */
   private void cerrar(){
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();

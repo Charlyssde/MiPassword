@@ -36,9 +36,9 @@ import mipasswordinterface.Login;
 import model.AES;
 
 /**
- * FXML Controller class
+ * Clase controller encargada de mostrar el login y dar la opcion de registro
  *
- * @author texch
+ * @author Carlos Carrillo
  */
 public class LogInController implements Initializable {
 
@@ -73,6 +73,11 @@ public class LogInController implements Initializable {
 
   }
 
+  /**
+   * Método que intenta un inicio de sesión de acuerdo a los datos ingresados
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void iniciarSesion(MouseEvent event) throws RemoteException {
     if (validarDatos()) {
@@ -95,22 +100,41 @@ public class LogInController implements Initializable {
     }
   }
 
+  /**
+   * metodo que determina si se encuentran o no vacios los campos
+   * 
+   * @return si algun campo se encuentra vacío
+   */
   private boolean validarDatos() {
     return !(txtCorreo.getText().isEmpty() || txtPass.getText().isEmpty());
   }
 
+  /**
+   * Metodo para validar que el campo de correo siga el patron de un corero electronico.
+   * 
+   * @return si es un correo valido o no.
+   */
   private boolean validarCorreo() {
     Pattern pattern = Pattern.compile(PATRON);
     Matcher matcher = pattern.matcher(txtCorreo.getText());
     return matcher.matches();
   }
 
+  /**
+   * evento que manda a llamar al metodo para cargar la pantalla de registro
+   * @param event 
+   */
   @FXML
   private void RegistrarUsuario(MouseEvent event) {
     cargarPantallaRegistro();
   }
 
+  /**
+   * Metodo que se encarga de inicializar la pantalla correspondiente al registro de usuario
+   */
   private void cargarPantallaRegistro() {
+    txtCorreo.setText("");
+    txtPass.setText("");
     try {
       FXMLLoader loader = new FXMLLoader();
       loader.setLocation(getClass().getResource("/view/Registro.fxml"));
@@ -130,6 +154,9 @@ public class LogInController implements Initializable {
     }
   }
 
+  /**
+   * Metodo que, una vez hecho el login, carga la pantalla principal del programa
+   */
   private void cargarPantallaBovedas() {
     try {
       FXMLLoader loader = new FXMLLoader();
@@ -149,10 +176,21 @@ public class LogInController implements Initializable {
     }
   }
 
+  /**
+   * metodo para cargar el cliente conectado al servidor
+   * @param c cliente conectado al servidor
+   */
   public void CargarCliente(Client c) {
     this.cliente = c;
   }
 
+  /**
+   * metodo para desencriptar la contraseña a partir de la contraseña entrante
+   * 
+   * @param text contraseña 
+   * @return contraseña desencriptada
+   * @throws RemoteException 
+   */
   private String desencriptarPassword(String text) throws RemoteException {
     user = cliente.server.getUsuario(txtCorreo.getText(), txtPass.getText());
     String passDec = "";

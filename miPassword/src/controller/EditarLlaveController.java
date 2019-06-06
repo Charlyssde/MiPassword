@@ -7,6 +7,7 @@ package controller;
 
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -21,7 +22,7 @@ import mipasswordinterface.Llave;
 import model.AlertMessage;
 
 /**
- * FXML Controller class
+ * Clase controller encargada de editar la llave seleccionada
  *
  * @author texch
  */
@@ -50,6 +51,7 @@ public class EditarLlaveController implements Initializable {
   
   private List<Llave> llaves;
   private Client cliente;
+  private ArrayList<Boveda> bovedas;
 
 
   /**
@@ -60,6 +62,11 @@ public class EditarLlaveController implements Initializable {
     // TODO
   }  
 
+  /**
+   * evento para guardar la llave
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void guardarLlave(MouseEvent event) throws RemoteException {
     if(validarDatos()){
@@ -70,7 +77,8 @@ public class EditarLlaveController implements Initializable {
           key.setUrl(txtUrl.getText());
           key.setUsername(txtUsuario.getText());
           Llave aux = new Llave(txtNombreLlave.getText(), txtUrl.getText(), 
-              txtUsuario.getText(), txtPassword.getText(), editada, selectedLlave.getId());
+              txtUsuario.getText(), txtPassword.getText(), editada);
+          aux.setId(key.getId());
           cliente.server.editarLlave(aux);
           anterior.actualizarTablaLlaves(editada, cliente);
           AlertMessage.mensaje("Se han modificado los datos exitosamente");
@@ -81,11 +89,20 @@ public class EditarLlaveController implements Initializable {
     }
   }
 
+  /**
+   * evento que llama al metodo de cerrar la ventana
+   * @param event 
+   */
+  
   @FXML
   private void cancelar(MouseEvent event) {
     cerrarVentana();
   }
   
+  /**
+   * metodo encargado de verificar que no haya datos vacios
+   * @return false si hay campos vacios, true si no hay vacios
+   */
   private boolean validarDatos(){
     if(txtNombreLlave.getText().isEmpty() || txtPassword.getText().isEmpty() || 
         txtUrl.getText().isEmpty() || txtUsuario.getText().isEmpty()){
@@ -95,21 +112,39 @@ public class EditarLlaveController implements Initializable {
     return true;
   }
   
+  /**
+   * metodo para cerrar la ventana actual
+   */
   private void cerrarVentana(){
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
   }
 
+  /**
+   * metodo para cargar los datos necesarios para la edicion de la llave
+   * 
+   * @param anterior pantalla anterior
+   * @param editada boveda a la que pertenece la llave
+   * @param selectedLlave llave seleccionada
+   * @param llaves lista de llaves 
+   * @param cl cliente conectado al servidor
+   * @param bovedas  lista de bovedas 
+   */
   public void cargarDatos(BovedasListController anterior, Boveda editada, 
-      Llave selectedLlave, List<Llave> llaves, Client cl) {
+      Llave selectedLlave, List<Llave> llaves, Client cl, ArrayList<Boveda> bovedas) {
     this.cliente = cl;
     this.anterior = anterior;
     this.editada = editada;
     this.selectedLlave = selectedLlave;
     this.llaves = llaves;
+    this.bovedas = bovedas;
     cargarInformacion(this.selectedLlave);
   }
 
+  /**
+   * metodo para cargar en los campos de texto la informacion de la llave
+   * @param selectedLlave 
+   */
   private void cargarInformacion(Llave selectedLlave) {
     txtNombreLlave.setText(selectedLlave.getNombre());
     txtUrl.setText(selectedLlave.getUrl());

@@ -20,9 +20,9 @@ import mipasswordinterface.Boveda;
 import model.AlertMessage;
 
 /**
- * FXML Controller class
+ * Clase controller encargada de realizar la edicion de una boveda
  *
- * @author texch
+ * @author Carlos Carrillo
  */
 public class EditarBovedaController implements Initializable {
 
@@ -50,6 +50,13 @@ public class EditarBovedaController implements Initializable {
     // TODO
   }
 
+  /**
+   * metodo para cargar los datos de la boveda necesarios
+   * @param listaNueva la lista de las bovedas
+   * @param nueva la boveda editada
+   * @param anterior pantalla anterior
+   * @param c cliente conectado al servidor
+   */
   public void cargarBoveda(ArrayList<Boveda> listaNueva, Boveda nueva, BovedasListController anterior, Client c) {
     this.cliente = c;
     editar = nueva;
@@ -58,6 +65,11 @@ public class EditarBovedaController implements Initializable {
     this.anterior = anterior;
   }
 
+  /**
+   * evento encargado de realizar la edicion de la boveda
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void editarBoveda(MouseEvent event) throws RemoteException {
     if (validarNombre()) {
@@ -65,7 +77,7 @@ public class EditarBovedaController implements Initializable {
         if (b.getNombre().equals(editar.getNombre())) {
           b.setNombre(txtNombre.getText());
           cliente.server.editarBoveda(b);
-          anterior.actualizarListaBovedas(bovedas);
+          anterior.actualizarListaBovedas();
           cerrar();
           AlertMessage.mensaje("Se ha actualizado con exito");
         }
@@ -73,6 +85,10 @@ public class EditarBovedaController implements Initializable {
     }
   }
 
+  /**
+   * metodo para validar que el nombre no exista ya dentro de la lista de bovedas del usuario
+   * @return true si no existe, false si existe o hay campos vacios
+   */
   private boolean validarNombre() {
 
     if (txtNombre.getText().isEmpty()) {
@@ -86,6 +102,11 @@ public class EditarBovedaController implements Initializable {
     return true;
   }
 
+  
+  /**
+   * metodo para verificar que existe el nombre de la boveda
+   * @return true si existe, false si no existe
+   */
   private boolean existeYa() {
 
     for (Boveda b : bovedas) {
@@ -96,11 +117,20 @@ public class EditarBovedaController implements Initializable {
     return false;
   }
 
+  /**
+   * evento que llama al metodo de cerrar ventana
+   * @param event 
+   */
   @FXML
   private void cancelar(MouseEvent event) {
     cerrar();
   }
+  
+  
 
+  /**
+   * metodo para cerrar la ventana
+   */
   public final void cerrar() {
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();

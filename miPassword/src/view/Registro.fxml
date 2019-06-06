@@ -35,8 +35,10 @@
       <Label layoutX="69.0" layoutY="336.0" text="Contraseña:" textFill="WHITE" />
       <Label layoutX="39.0" layoutY="214.0" text="Correo Electrónico:" textFill="WHITE" />
       <Label layoutX="34.0" layoutY="283.0" text="Nombre de Usuario:" textFill="WHITE" />
-      <Label fx:id="lblVer" disable="true" layoutX="358.0" layoutY="337.0" text="VER" textFill="WHITE" visible="false" />
-      <Label fx:id="lblVer1" disable="true" layoutX="368.0" layoutY="347.0" onMousePressed="#revealPassword" onMouseReleased="#hidePassword" text="VER" textFill="WHITE" visible="false" />
+      <Label fx:id="lblVer" disable="true" layoutX="358.0" layoutY="337.0" onMousePressed="#revealPassword" onMouseReleased="#hidePassword" text="VER" textFill="WHITE" visible="false">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Label>
       <TextField fx:id="txtPassReveal" layoutX="141.0" layoutY="333.0" prefHeight="25.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 0 0 1 0; -fx-border-color: white; -fx-text-fill: white;" visible="false" />
    </children>
 </AnchorPane>

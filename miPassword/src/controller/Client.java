@@ -5,7 +5,6 @@
  */
 package controller;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -13,13 +12,14 @@ import java.rmi.server.UnicastRemoteObject;
 import mipasswordinterface.MPInterface;
 
 /**
- *
- * @author texch
+ * Clase encargada de conectarse al servidor
+ * 
+ * @author Carlos Carrillo
  */
 public class Client extends UnicastRemoteObject {
 
   MPInterface server;
-  String nombre = "GameServer";
+  String nombre = "MiPasswordServer";
   String serverName = "localhost";
   int serverPORT = 5254;
 
@@ -27,6 +27,9 @@ public class Client extends UnicastRemoteObject {
     super();
   }
 
+  /**
+   * Realiza el registro en el servidor
+   */
   public void iniciarClient() {
 
     try {

@@ -21,9 +21,9 @@ import mipasswordinterface.Usuario;
 import model.AlertMessage;
 
 /**
- * FXML Controller class
+ * Clase controller encargada de la edicion de datos del usuario
  *
- * @author texch
+ * @author Carlos Carrillo
  */
 public class EditarUsuarioController implements Initializable {
 
@@ -56,6 +56,11 @@ public class EditarUsuarioController implements Initializable {
     // TODO
   }  
 
+  /**
+   * metodo que cambia los datos del usuario y los actualiza
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void guardarDatos(MouseEvent event) throws RemoteException {
     
@@ -78,6 +83,10 @@ public class EditarUsuarioController implements Initializable {
     
   }
   
+  /**
+   * metodo que valida que todos los campos estén llenos
+   * @return true si algun campo está lleno, false si no hay campos vacios
+   */
   private boolean camposVacios(){
     
     if(txtApellidos.getText().isEmpty() || txtCorreo.getText().isEmpty() || txtNombre.getText().isEmpty()
@@ -88,6 +97,11 @@ public class EditarUsuarioController implements Initializable {
     return false;
   }
   
+  /**
+   * Metodo para validar que el campo de correo siga el patron de un corero electronico.
+   * 
+   * @return si es un correo valido o no.
+   */
   private boolean esCorreo(){
     
     Pattern pattern = Pattern.compile(PATRON);
@@ -96,6 +110,12 @@ public class EditarUsuarioController implements Initializable {
     
   }
   
+  /**
+   * Metodo para asignar los valores a los campos de texto y cargar los elementos necesarios
+   * @param usuario el usuario con los uevos datos
+   * @param cl cliente conectado al servidor 
+   * @param anterior pantalla anterior, para acutalizar los datos de esa pantalla
+   */
   public void cargarDatos(Usuario usuario, Client cl, BovedasListController anterior){
     this.usuario = usuario;
     txtApellidos.setText(usuario.getApellido());
@@ -107,12 +127,19 @@ public class EditarUsuarioController implements Initializable {
     
   }
 
+  /**
+   * metodo que llama al metodo para cerrar ventana
+   * @param event 
+   */
   @FXML
   private void cancelar(MouseEvent event) {
     cerrar();
         
   }
   
+  /**
+   * metodo que cierra la ventana acutal
+   */
   private void cerrar(){
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();

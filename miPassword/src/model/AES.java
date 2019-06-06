@@ -36,6 +36,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import mipasswordinterface.Usuario;
 
+/**
+ * Clase encargada de la encriptacion de los datos
+ * @author Carlos Carrillo
+ */
 public class AES {
 
   private static SecretKeySpec secretKey;
@@ -49,10 +53,17 @@ public class AES {
   private static byte [] privEncoded;
   private static byte [] pubEncoded;
 
+  /**
+   * Constructor de la clase
+   * @param usuario usuario del cual se desean encriptar los datos
+   */
   public AES(Usuario usuario) {
     user = usuario;
   }
 
+  /**
+   * metodo para establecer la llave
+   */
   public static void setKey() {
     MessageDigest sha = null;
     try {
@@ -68,6 +79,11 @@ public class AES {
     }
   }
 
+  /**
+   * Metodo para encriptar através de la llave publica
+   * @param strToEncrypt texto a encriptar
+   * @return 
+   */
   public static String encrypt(String strToEncrypt) {
     try {
       setKey();
@@ -80,6 +96,11 @@ public class AES {
     return null;
   }
 
+  /**
+   * metodo para desencriptar
+   * @param strToDecrypt texto a desencriptar
+   * @return 
+   */
   public static String decrypt(String strToDecrypt) {
     try {
       setKey();
@@ -96,6 +117,15 @@ public class AES {
     Comienza el cripting de RSA en el que se deben crear las llaves pub y priv con las que se encripta
     las contraseñas de las llaves
     
+   */
+  /**
+   * metodo para generar las dos llaves 
+   * @param size
+   * @throws NoSuchAlgorithmException
+   * @throws NoSuchPaddingException
+   * @throws InvalidKeyException
+   * @throws IllegalBlockSizeException
+   * @throws BadPaddingException 
    */
   public void genKeyPair(int size) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
@@ -122,6 +152,19 @@ public class AES {
     user.setClavePrivada(prK);
   }
 
+  /**
+   * metodo para encriptar las contraseñas de lsa llaves
+   * @param plain texto a encriptar
+   * @return
+   * @throws NoSuchAlgorithmException
+   * @throws NoSuchPaddingException
+   * @throws InvalidKeyException
+   * @throws IllegalBlockSizeException
+   * @throws BadPaddingException
+   * @throws InvalidKeySpecException
+   * @throws UnsupportedEncodingException
+   * @throws NoSuchProviderException 
+   */
   public String EncryptPassword(String plain) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, UnsupportedEncodingException, NoSuchProviderException {
 
     PublicKey pub = convertStringToPublic();
@@ -135,6 +178,16 @@ public class AES {
 
   }
 
+  /**
+   * metodo para desencriptar las contraseñas
+   * @param result texto a desencriptar
+   * @return
+   * @throws NoSuchAlgorithmException
+   * @throws NoSuchPaddingException
+   * @throws InvalidKeyException
+   * @throws IllegalBlockSizeException
+   * @throws BadPaddingException 
+   */
   public String DecryptPassword(String result) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
     PrivateKey pv = convertStringToKey();

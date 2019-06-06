@@ -8,7 +8,6 @@ package controller;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,9 +23,9 @@ import model.AlertMessage;
 //import model.Usuario;
 
 /**
- * FXML Controller class
+ * Clase controller encargada de agregar una boveda
  *
- * @author texch
+ * @author Carlos Carrillo
  */
 public class AgregarBovedaController implements Initializable {
 
@@ -55,29 +54,47 @@ public class AgregarBovedaController implements Initializable {
     // TODO
   }
 
+  /**
+   * evento que agrega una boveda
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void agregarBoveda(MouseEvent event) throws RemoteException {
-    Random rd = new Random();
+    
     if (validarNombre()) {
-      Boveda nueva = new Boveda(txtNombre.getText(), user,rd.nextInt());
+      Boveda nueva = new Boveda(txtNombre.getText(), user);
       cliente.server.agregarBoveda(nueva);
-      bovedas.add(nueva);
-      anterior.actualizarListaBovedas(this.bovedas);
+      anterior.actualizarListaBovedas();
       cerrarVentana();
       AlertMessage.mensaje("Se ha guardado la boveda de forma exitosa");
     }
   }
 
+  /**
+   * evento que llama al metodo para cerrar la ventana
+   * @param event 
+   */
   @FXML
   private void cancelar(MouseEvent event) {
     cerrarVentana();
   }
 
+  /**
+   * metodo para cerrar la ventana
+   */
   private void cerrarVentana() {
     Stage stage = (Stage) anchorPane.getScene().getWindow();
     stage.close();
   }
 
+  /**
+   * metodo que carga los objetos necesarios para crear la boveda
+   * @param anterior pantalla anterior
+   * @param listaBovedas lista de las bovedas
+   * @param owner dueño de las bovedas
+   * @param c cliente conectado al servidor
+   */
   public void cargarObjetos(BovedasListController anterior, ArrayList<Boveda> listaBovedas, Usuario owner, Client c) {
     this.cliente = c;
     this.anterior = anterior;
@@ -85,6 +102,11 @@ public class AgregarBovedaController implements Initializable {
     this.user = owner;
   }
 
+  
+  /**
+   * metodo que valida que el nombre no exista o este vacio
+   * @return true si no esta repetido o esta vacio
+   */
   private boolean validarNombre() {
 
     if (txtNombre.getText().isEmpty()) {
@@ -98,6 +120,10 @@ public class AgregarBovedaController implements Initializable {
     return true;
   }
 
+  /**
+   * metodo para verificar que no exista una boveda con tal nombre
+   * @return trye si existe, false si no
+   */
   private boolean existeYa() {
 
     for (Boveda b : bovedas) {

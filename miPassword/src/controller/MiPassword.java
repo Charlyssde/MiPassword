@@ -14,19 +14,32 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.AlertMessage;
 
 /**
- *
- * @author texch
+ *Clase  que inicializa el programa de MiPassword
+ * 
+ * @author Carlos Carrillo
  */
 public class MiPassword extends Application {
   public Client c;
   
+  
+  /**
+   * Metodo que inicia la primera pantalla e inicializa la conexión al servidor
+   * @param primaryStage
+   * @throws RemoteException 
+   */
   @Override
-  public void start(Stage primaryStage) throws RemoteException {
+  public void start(Stage primaryStage) {
     
-     c = new Client();
-    c.iniciarClient();
+    try {
+      c = new Client();
+      c.iniciarClient();
+    } catch (RemoteException ex) {
+      AlertMessage.mensaje("No se pudo conectar al servidor, intente más tarde");
+    }
+    
     try {
       FXMLLoader loader = new FXMLLoader();
       loader.setLocation(getClass().getResource("/view/LogIn.fxml"));

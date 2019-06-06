@@ -43,9 +43,9 @@ import mipasswordinterface.Usuario;
 import model.AlertMessage;
 
 /**
- * FXML Controller class
+ * Clase controller que permite ver todas las llaves y bovedas del usuario
  *
- * @author texch
+ * @author Carlos Carrillo
  */
 public class BovedasListController implements Initializable {
 
@@ -111,6 +111,11 @@ public class BovedasListController implements Initializable {
     selectedInBovedas();
   }
 
+  
+  /**
+   * evento que carga la pantalla del login y cierra la sesión del usuario
+   * @param event 
+   */
   @FXML
   private void salir(MouseEvent event) {
     
@@ -131,6 +136,10 @@ public class BovedasListController implements Initializable {
     }
   }
 
+  /**
+   * evento que incializa la pantalla para el registro de una nueva boveda
+   * @param event 
+   */
   @FXML
   private void agregarBoveda(MouseEvent event) {
     try {
@@ -153,6 +162,11 @@ public class BovedasListController implements Initializable {
     btnEditarBoveda.setDisable(true);
   }
 
+  
+  /**
+   * evento que inicializa la pantalla para editar una boveda
+   * @param event 
+   */
   @FXML
   private void editarBoveda(MouseEvent event) {
     try {
@@ -175,12 +189,18 @@ public class BovedasListController implements Initializable {
     this.btnEliminarBoveda.setDisable(true);
   }
 
+  /**
+   * evento encargado de eliminar una boveda siempre y cuando no contenga llaves
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void eliminarBoveda(MouseEvent event) throws RemoteException {
     Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la bóveda?");
     if (result.get() == ButtonType.OK) {
       btnEliminarBoveda.setDisable(true);
       btnEditarBoveda.setDisable(true);
+      btnNuevaLlave.setDisable(true);
       for (Boveda b : bovedas) {
         if (b.equals(editada)) {
           if(!cliente.server.getAllLlaves(b).isEmpty()){
@@ -188,8 +208,7 @@ public class BovedasListController implements Initializable {
             break;
           } else {
             cliente.server.eliminarBoveda(b);
-            bovedas.remove(b);
-            actualizarListaBovedas(bovedas);
+            actualizarListaBovedas();
             AlertMessage.mensaje("Eliminado correctamente");
             break;
           }
@@ -200,11 +219,10 @@ public class BovedasListController implements Initializable {
   }
 
   /**
-   *
-   * @param id el identificador que se desea buscar
-   * @return usuario el usuario correspondiente al id
+   * evento que inicializa la pantalla para agregar una llave
+   * @param event
+   * @throws IOException 
    */
-
   @FXML
   private void nuevaLlave(MouseEvent event) throws IOException {
     FXMLLoader loader = new FXMLLoader();
@@ -221,8 +239,14 @@ public class BovedasListController implements Initializable {
     primaryStage.show();
     btnEditarLlave.setDisable(true);
     btnEliminarLlave.setDisable(true);
+    btnNuevaLlave.setDisable(true);
   }
 
+  /**
+   * evento que inicializa la pantalla para editar una llave
+   * @param event
+   * @throws IOException 
+   */
   @FXML
   private void editarLlave(MouseEvent event) throws IOException {
     FXMLLoader loader = new FXMLLoader();
@@ -230,7 +254,7 @@ public class BovedasListController implements Initializable {
     loader.load();
     AnchorPane root = loader.getRoot();
     EditarLlaveController ventana = loader.getController();
-    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves, cliente);
+    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves, cliente,this.bovedas);
     Scene scene = new Scene(root);
     Stage primaryStage = new Stage();
     primaryStage.setTitle("Editar Llave");
@@ -239,8 +263,14 @@ public class BovedasListController implements Initializable {
     primaryStage.show();
     btnEditarLlave.setDisable(true);
     btnEliminarLlave.setDisable(true);
+    btnNuevaLlave.setDisable(true);
   }
 
+  /**
+   * evento que se encarga de eliminar una llave seleccionada
+   * @param event
+   * @throws RemoteException 
+   */
   @FXML
   private void eliminarLlave(MouseEvent event) throws RemoteException {
     Optional<ButtonType> result = AlertMessage.confirmacion("¿Deseas realmente eliminar la llave?");
@@ -248,24 +278,35 @@ public class BovedasListController implements Initializable {
       for (Llave del : llaves) {
         if (del.equals(selectedLlave)) {
           cliente.server.eliminarLlave(del);
-          llaves.remove(del);
+          editada = cliente.server.getBoveda(editada);
           actualizarTablaLlaves(editada, cliente);
-          actualizarListaBovedas(bovedas);
+          actualizarListaBovedas();
           AlertMessage.mensaje("Llave eliminada satisfactoriamente");
-          break;
         }
       }
       btnEditarLlave.setDisable(true);
       btnEliminarLlave.setDisable(true);
+      btnNuevaLlave.setDisable(true);
     }
   }
 
+  /**
+   * metodo para cargar el usuario que inicio sesión
+   * @param user usuario iniciado
+   * @param c cliente conectado al servidor
+   * @throws RemoteException 
+   */
   public void cargarUsuario(Usuario user, Client c) throws RemoteException {
      this.cliente = c;
     this.owner = user;
     this.lblUsername.setText(user.getNombre());
     cargarBovedas();
   }
+  
+  /**
+   * metodo para cargar las bovedas que le corresponden al usuario
+   * @throws RemoteException 
+   */
   public void cargarBovedas() throws RemoteException {
     bovedas = cliente.server.getAllBovedas(owner.getUsername());
     System.out.println(bovedas.size());
@@ -274,23 +315,40 @@ public class BovedasListController implements Initializable {
     }
   }
 
+  
+  /**
+   * metodo que actualiza la tabla de las llaves de acuerdo a una boveda
+   * @param nueva boveda dueña de las llaves
+   * @param cl cliente conectado al servidor
+   * @throws RemoteException 
+   */
   public void actualizarTablaLlaves(Boveda nueva, Client cl) throws RemoteException {
     this.cliente = cl;
     tblLlaves.getItems().clear();
     llaves = cliente.server.getAllLlaves(nueva);
     tblLlaves.getItems().addAll(llaves);
+    
   }
 
-  public void actualizarListaBovedas(ArrayList<Boveda> nuevaLista) {
+  /**
+   * metodo que actualiza la lista de bovedas del usuario
+   * @throws RemoteException 
+   */
+  public void actualizarListaBovedas() throws RemoteException {
     listaBovedas.getItems().clear();
+    this.bovedas = cliente.server.getAllBovedas(owner.getUsername());
     ArrayList<String> nombres = new ArrayList<>();
-    for (Boveda b : nuevaLista) {
+    for (Boveda b : bovedas ) {
       nombres.add(b.getNombre());
     }
+    selectedInBovedas();
     listaBovedas.getItems().addAll(nombres);
   }
 
-  public void cargarColumnasLlave() {
+  /**
+   * metodo que les da el valor a las columnas de la tabla de llaves
+   */
+  private void cargarColumnasLlave() {
     colUrl.setCellValueFactory(
         new PropertyValueFactory<>("url"));
     colUsername.setCellValueFactory(
@@ -302,6 +360,9 @@ public class BovedasListController implements Initializable {
 
   }
 
+  /**
+   * metodo que establece el comportamiento al seleccionar un elemento de las llaves
+   */
   private void selectedInLlaves() {
     tblLlaves.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
       @Override
@@ -321,6 +382,9 @@ public class BovedasListController implements Initializable {
     });
   }
 
+  /**
+   * metodo que establece el comportamiento al seleccionar un elemento de las bovedas
+   */
   private void selectedInBovedas() {
     listaBovedas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
       @Override
@@ -333,26 +397,34 @@ public class BovedasListController implements Initializable {
               editada = b;
               tblLlaves.getItems().clear();
               try {
-                llaves = cliente.server.getAllLlaves(b);
+                llaves = cliente.server.getAllLlaves(editada);
+                tblLlaves.getItems().addAll(llaves);
               } catch (RemoteException ex) {
                 Logger.getLogger(BovedasListController.class.getName()).log(Level.SEVERE, null, ex);
               }
-              tblLlaves.getItems().addAll(llaves);
+              
+              btnNuevaLlave.setDisable(false);
+            btnEditarBoveda.setDisable(false);
+            btnEliminarBoveda.setDisable(false);
               break;
             }
           }
-          btnNuevaLlave.setDisable(false);
-          btnEditarBoveda.setDisable(false);
-          btnEliminarBoveda.setDisable(false);
+          
         } else {
           btnEditarBoveda.setDisable(true);
           btnEliminarBoveda.setDisable(true);
+          btnNuevaLlave.setDisable(true);
         }
       }
 
     });
   }
 
+  /**
+   * evento que inicializa la pantalla para editar los datos del usuario
+   * @param event
+   * @throws IOException 
+   */
   @FXML
   private void editarDatosUsuario(MouseEvent event) throws IOException {
     FXMLLoader loader = new FXMLLoader();
@@ -372,6 +444,10 @@ public class BovedasListController implements Initializable {
     
   }
 
+  /**
+   * metodo para establecer el nombre del usuario en la etiqueta
+   * @param usuario usuario que inició sesión
+   */
   void actualizarUsuario(Usuario usuario) {
     lblUsername.setText(usuario.getNombre());
     
