@@ -7,7 +7,6 @@ package controller;
 
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -51,7 +50,6 @@ public class EditarLlaveController implements Initializable {
   
   private List<Llave> llaves;
   private Client cliente;
-  private ArrayList<Boveda> bovedas;
 
 
   /**
@@ -59,7 +57,9 @@ public class EditarLlaveController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    /*
+    No hay funcion para rellenar el método
+    */
   }  
 
   /**
@@ -128,16 +128,14 @@ public class EditarLlaveController implements Initializable {
    * @param selectedLlave llave seleccionada
    * @param llaves lista de llaves 
    * @param cl cliente conectado al servidor
-   * @param bovedas  lista de bovedas 
    */
   public void cargarDatos(BovedasListController anterior, Boveda editada, 
-      Llave selectedLlave, List<Llave> llaves, Client cl, ArrayList<Boveda> bovedas) {
+      Llave selectedLlave, List<Llave> llaves, Client cl) {
     this.cliente = cl;
     this.anterior = anterior;
     this.editada = editada;
     this.selectedLlave = selectedLlave;
     this.llaves = llaves;
-    this.bovedas = bovedas;
     cargarInformacion(this.selectedLlave);
   }
 

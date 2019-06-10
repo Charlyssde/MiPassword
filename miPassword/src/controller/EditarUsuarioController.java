@@ -42,7 +42,7 @@ public class EditarUsuarioController implements Initializable {
   @FXML
   private Button btnCancelar;
   
-  private final String PATRON = "^(.+)@(.+)$";
+  private static final String PATRON = "^(.+)@(.+)$";
   private Usuario usuario;
   private Client cliente;
  
@@ -53,7 +53,9 @@ public class EditarUsuarioController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    /*
+    No hay funcion para rellenar el método
+    */
   }  
 
   /**
@@ -89,12 +91,8 @@ public class EditarUsuarioController implements Initializable {
    */
   private boolean camposVacios(){
     
-    if(txtApellidos.getText().isEmpty() || txtCorreo.getText().isEmpty() || txtNombre.getText().isEmpty()
-        || txtTelefono.getText().isEmpty()){
-      return true;
-    }
-    
-    return false;
+    return txtApellidos.getText().isEmpty() || txtCorreo.getText().isEmpty() || txtNombre.getText().isEmpty()
+        || txtTelefono.getText().isEmpty();
   }
   
   /**

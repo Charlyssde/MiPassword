@@ -7,8 +7,6 @@ package controller;
 
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -48,7 +46,6 @@ public class AgregarLlaveController implements Initializable {
   
   private BovedasListController anterior;
   
-  private List<Boveda> nuevaLista;
   private Client cliente;
 
   /**
@@ -56,7 +53,9 @@ public class AgregarLlaveController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+   /*
+    No hay funcion para rellenar el método
+    */
   }  
 
  
@@ -107,12 +106,10 @@ public class AgregarLlaveController implements Initializable {
    * metodo para cargar los datos necesarios para la adición de la boveda
    * @param anterior pantalla anterior
    * @param owner dueño de la boveda
-   * @param nuevaLista lista con las bovedas actuales
    * @param cl  cliente conectado al servidor
    */
-  public void cargarDatos(BovedasListController anterior,Boveda owner, ArrayList<Boveda> nuevaLista, Client cl){
+  public void cargarDatos(BovedasListController anterior,Boveda owner, Client cl){
     this.cliente = cl;
-    this.nuevaLista = nuevaLista;
     this.anterior = anterior;
     this.owner = owner;  
   }

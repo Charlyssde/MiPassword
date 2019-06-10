@@ -58,7 +58,7 @@ public class AES {
    * @param usuario usuario del cual se desean encriptar los datos
    */
   public AES(Usuario usuario) {
-    user = usuario;
+    this.user = usuario;
   }
 
   /**
@@ -72,10 +72,8 @@ public class AES {
       key = sha.digest(key);
       key = Arrays.copyOf(key, 16);
       secretKey = new SecretKeySpec(key, "AES");
-    } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+    } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, e);
     }
   }
 
@@ -91,7 +89,7 @@ public class AES {
       cipher.init(Cipher.ENCRYPT_MODE, secretKey);
       return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes("UTF-8")));
     } catch (Exception e) {
-      System.out.println("Error while encrypting: " + e.toString());
+      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, e);
     }
     return null;
   }
@@ -108,8 +106,7 @@ public class AES {
       cipher.init(Cipher.DECRYPT_MODE, secretKey);
       return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
     } catch (Exception e) {
-      System.out.println("Error while decrypting: " + e.toString());
-    }
+        Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, e);      }
     return null;
   }
 
@@ -121,35 +118,34 @@ public class AES {
   /**
    * metodo para generar las dos llaves 
    * @param size
-   * @throws NoSuchAlgorithmException
-   * @throws NoSuchPaddingException
-   * @throws InvalidKeyException
-   * @throws IllegalBlockSizeException
-   * @throws BadPaddingException 
    */
-  public void genKeyPair(int size) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+  public static void genKeyPair(int size) {
 
-    KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-    kpg.initialize(size);
-    KeyPair kp = kpg.genKeyPair();
-
-    PublicKey publicKey = kp.getPublic();
-    PrivateKey privateKey = kp.getPrivate();
-
-    PrivateKey = privateKey;
-    PublicKey = publicKey;
-    
-     privEncoded = PrivateKey.getEncoded();
-     pubEncoded =  PublicKey.getEncoded();
-     
-    String prKEnc = new String(privEncoded);
-    String prK = encrypt(prKEnc);
-    
-    String pubKEnc = new String(pubEncoded);
-    String pubK = encrypt(pubKEnc);
-
-    user.setClavePublica(pubK);
-    user.setClavePrivada(prK);
+    try {
+      KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+      kpg.initialize(size);
+      KeyPair kp = kpg.genKeyPair();
+      
+      PublicKey publicKey = kp.getPublic();
+      PrivateKey privateKey = kp.getPrivate();
+      
+      PrivateKey = privateKey;
+      PublicKey = publicKey;
+      
+      privEncoded = PrivateKey.getEncoded();
+      pubEncoded =  PublicKey.getEncoded();
+      
+      String prKEnc = new String(privEncoded);
+      String prK = encrypt(prKEnc);
+      
+      String pubKEnc = new String(pubEncoded);
+      String pubK = encrypt(pubKEnc);
+      
+      user.setClavePublica(pubK);
+      user.setClavePrivada(prK);
+    } catch (NoSuchAlgorithmException ex) {
+      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   /**
@@ -218,9 +214,7 @@ public class AES {
       EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(publicBytes);
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
       priv = (PrivateKey) keyFactory.generatePrivate(keySpec);
-    } catch (NoSuchAlgorithmException ex) {
-      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (InvalidKeySpecException ex) {
+    } catch (NoSuchAlgorithmException |InvalidKeySpecException ex) {
       Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
     }
     
@@ -234,15 +228,13 @@ public class AES {
       KeyFactory keyFactory = KeyFactory.getInstance("RSA");
       EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
       pub = keyFactory.generatePublic(publicKeySpec);
-    } catch (NoSuchAlgorithmException ex) {
-      Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (InvalidKeySpecException ex) {
+    } catch (NoSuchAlgorithmException | InvalidKeySpecException ex ) {
       Logger.getLogger(AES.class.getName()).log(Level.SEVERE, null, ex);
     }
     return pub;
   }
 
-  public static void main(String[] args) {
+  /*public static void main(String[] args) {
     try {
 
       Usuario u = new Usuario("User", "Carlos", "Carrillo", "2281568496", "2580asd", "jjuso@gmail");
@@ -279,5 +271,6 @@ public class AES {
     }
 
   }
+*/
 
 }

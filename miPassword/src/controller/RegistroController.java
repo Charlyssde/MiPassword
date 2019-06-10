@@ -6,6 +6,7 @@
 package controller;
 
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +49,7 @@ public class RegistroController implements Initializable {
   @FXML
   private TextField txtTelefono;
 
-  private final String PATRON = "^(.+)@(.+)$";
+  private static final String PATRON = "^(.+)@(.+)$";
   @FXML
   private Label lblVer;
   @FXML
@@ -60,7 +61,9 @@ public class RegistroController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    /*
+    No hay funcion para rellenar el método
+    */
   }
 
   /**
@@ -69,7 +72,7 @@ public class RegistroController implements Initializable {
    * @throws Exception 
    */
   @FXML
-  private void guardarUsuario(MouseEvent event) throws Exception {
+  private void guardarUsuario(MouseEvent event) throws RemoteException{
     if (camposVacios()) {
       AlertMessage.mensaje("No pueden quedar campos vacíos");
     } else if (!validarCorreo()) {

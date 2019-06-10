@@ -19,8 +19,6 @@ import javafx.stage.Stage;
 import mipasswordinterface.Boveda;
 import mipasswordinterface.Usuario;
 import model.AlertMessage;
-//import model.Boveda;
-//import model.Usuario;
 
 /**
  * Clase controller encargada de agregar una boveda
@@ -51,7 +49,9 @@ public class AgregarBovedaController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    /*
+    No hay funcion para rellenar el método
+    */
   }
 
   /**

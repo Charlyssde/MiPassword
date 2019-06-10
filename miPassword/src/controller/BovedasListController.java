@@ -5,9 +5,6 @@
  */
 package controller;
 
-//import model.Boveda;
-//import model.Llave;
-//import model.Usuario;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
@@ -104,7 +101,7 @@ public class BovedasListController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    
     bovedas = new ArrayList<>();
     cargarColumnasLlave();
     selectedInLlaves();
@@ -205,16 +202,22 @@ public class BovedasListController implements Initializable {
         if (b.equals(editada)) {
           if(!cliente.server.getAllLlaves(b).isEmpty()){
             AlertMessage.mensaje("No se puede eliminar una bóveda que aún contenga llaves");
-            break;
+            actualizarListaBovedas();
           } else {
             cliente.server.eliminarBoveda(b);
             actualizarListaBovedas();
             AlertMessage.mensaje("Eliminado correctamente");
-            break;
           }
+          break;
         }
       }
+    }else{
+      actualizarListaBovedas();
+      btnEliminarBoveda.setDisable(false);
+      btnEditarBoveda.setDisable(false);
+      btnNuevaLlave.setDisable(false);
     }
+    
 
   }
 
@@ -230,7 +233,7 @@ public class BovedasListController implements Initializable {
     loader.load();
     AnchorPane root = loader.getRoot();
     AgregarLlaveController ventana = loader.getController();
-    ventana.cargarDatos(this, this.editada, this.bovedas, cliente);
+    ventana.cargarDatos(this, this.editada, cliente);
     Scene scene = new Scene(root);
     Stage primaryStage = new Stage();
     primaryStage.setTitle("Agregar Llave");
@@ -254,7 +257,7 @@ public class BovedasListController implements Initializable {
     loader.load();
     AnchorPane root = loader.getRoot();
     EditarLlaveController ventana = loader.getController();
-    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves, cliente,this.bovedas);
+    ventana.cargarDatos(this, this.editada, this.selectedLlave, this.llaves, cliente);
     Scene scene = new Scene(root);
     Stage primaryStage = new Stage();
     primaryStage.setTitle("Editar Llave");
@@ -309,7 +312,6 @@ public class BovedasListController implements Initializable {
    */
   public void cargarBovedas() throws RemoteException {
     bovedas = cliente.server.getAllBovedas(owner.getUsername());
-    System.out.println(bovedas.size());
     for(Boveda b : bovedas){
       listaBovedas.getItems().add(b.toString());
     }
@@ -370,7 +372,7 @@ public class BovedasListController implements Initializable {
         if (tblLlaves.getSelectionModel().getSelectedItem() != null) {
           TableView.TableViewSelectionModel selectionModel = tblLlaves.getSelectionModel();
           selectedLlave = (Llave) selectionModel.getSelectedItem();
-          System.out.println(selectedLlave.toString());
+          
           btnEditarLlave.setDisable(false);
           btnEliminarLlave.setDisable(false);
         } else {

@@ -15,6 +15,10 @@ import javafx.stage.StageStyle;
  * @author texch
  */
 public class AlertMessage {
+  
+  private AlertMessage(){
+    
+  }
 
   public static void mensaje(String mensaje) {
     Alert dialogo = new Alert(Alert.AlertType.INFORMATION);

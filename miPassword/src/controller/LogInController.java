@@ -55,7 +55,7 @@ public class LogInController implements Initializable {
 
   private Usuario user = null;
 
-  private final String PATRON = "^(.+)@(.+)$";
+  private static final String PATRON = "^(.+)@(.+)$";
 
   private Client cliente;
 
@@ -82,7 +82,6 @@ public class LogInController implements Initializable {
   private void iniciarSesion(MouseEvent event) throws RemoteException {
     if (validarDatos()) {
       if (validarCorreo()) {
-        //String pass = desencriptarPassword(txtPass.getText());
         Login temp = new Login(txtCorreo.getText(),txtPass.getText() );
         user = cliente.server.LogIn(temp);
         if (user != null) {
@@ -191,7 +190,7 @@ public class LogInController implements Initializable {
    * @return contraseña desencriptada
    * @throws RemoteException 
    */
-  private String desencriptarPassword(String text) throws RemoteException {
+  /*private String desencriptarPassword(String text) throws RemoteException {
     user = cliente.server.getUsuario(txtCorreo.getText(), txtPass.getText());
     String passDec = "";
     try {
@@ -210,7 +209,7 @@ public class LogInController implements Initializable {
     }
     
     return passDec;
-  }
+  }*/
   
 
 }

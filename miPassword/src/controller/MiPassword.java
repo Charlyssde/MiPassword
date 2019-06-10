@@ -22,7 +22,7 @@ import model.AlertMessage;
  * @author Carlos Carrillo
  */
 public class MiPassword extends Application {
-  public Client c;
+  private Client c;
   
   
   /**

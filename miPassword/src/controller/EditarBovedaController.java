@@ -47,7 +47,9 @@ public class EditarBovedaController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
+    /*
+    No hay funcion para rellenar el método
+    */
   }
 
   /**
